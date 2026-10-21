@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petualangan Detektif AI - Misi Hutan Misteri</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Fredoka & Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        jungle: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                            950: '#052e16',
+                        }
+                    },
+                    fontFamily: {
+                        display: ['Fredoka', 'sans-serif'],
+                        body: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #052e16;
+            background-image: radial-gradient(#15803d 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        h1, h2, h3, .font-display {
+            font-family: 'Fredoka', cursive;
+        }
+        @media print {
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            body { background: white !important; color: black !important; }
+            .printable-card { border: 1px solid #ccc !important; box-shadow: none !important; }
+        }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen pb-12">
+
+    <!-- HEADER / NAVBAR -->
+    <header class="no-print bg-jungle-900/90 backdrop-blur-md border-b border-jungle-700/50 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-amber-500 rounded-xl flex items-center justify-center text-jungle-950 shadow-lg font-bold text-xl">
+                    <i class="fa-solid fa-compass"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-amber-400 tracking-wide leading-none">DETEKTIF AI</h1>
+                    <p class="text-xs text-jungle-300 font-semibold mt-0.5">Misi Hutan Misteri • TIK SD Kelas 6</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <div class="bg-jungle-950 px-4 py-1.5 rounded-full border border-jungle-700 flex items-center space-x-2">
+                    <i class="fa-solid fa-trophy text-amber-400 text-sm"></i>
+                    <span id="scoreBadge" class="text-sm font-bold text-emerald-300">Skor: 0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-5xl mx-auto px-4 mt-6">
+
+        <!-- SCREEN 1: LANDING & FORM IDENTITAS -->
+        <section id="screenLanding" class="bg-gradient-to-b from-jungle-900 to-jungle-950 rounded-3xl border-2 border-jungle-600 p-6 md:p-8 text-center shadow-2xl relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 opacity-10 text-emerald-300 pointer-events-none">
+                <i class="fa-solid fa-tree text-[240px]"></i>
+            </div>
+            
+            <span class="inline-block px-4 py-1.5 bg-amber-500/20 text-amber-300 border border-amber-500/40 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
+                <i class="fa-solid fa-shield-halved mr-1"></i> Tantangan TIK Pertemuan 3
+            </span>
+            
+            <h2 class="text-3xl md:text-5xl font-display font-bold text-amber-400 mb-3">
+                Misi Hutan Misteri: Membongkar Keterbatasan AI
+            </h2>
+            <p class="text-jungle-200 text-sm md:text-base max-w-2xl mx-auto mb-6 leading-relaxed">
+                Halo Detektif Cilik! AI sering membantu manusia, tetapi AI bisa melakukan <strong>kesalahan fatal jika Data Latihannya mengalami BIAS</strong>. Tugasmu adalah melewati 2 level misi untuk mendapatkan Sertifikat Auditor AI!
+            </p>
+
+            <!-- FORM IDENTITAS SISWA WAJIB -->
+            <div class="bg-jungle-900/90 border border-jungle-700/80 rounded-2xl p-5 max-w-xl mx-auto mb-6 text-left shadow-lg">
+                <h3 class="text-amber-300 font-bold text-base mb-3 flex items-center">
+                    <i class="fa-solid fa-user-pen mr-2 text-amber-400"></i> Isikan Identitas Detektif Kamu:
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div class="sm:col-span-3">
+                        <label class="block text-xs font-bold text-jungle-200 mb-1">Nama Lengkap Siswa *</label>
+                        <input type="text" id="studentName" class="w-full bg-jungle-950 border border-jungle-700 rounded-xl px-3 py-2 text-sm text-white focus:border-amber-400 focus:outline-none" placeholder="Masukkan nama lengkapmu..." required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-jungle-200 mb-1">Kelas *</label>
+                        <input type="text" id="studentClass" class="w-full bg-jungle-950 border border-jungle-700 rounded-xl px-3 py-2 text-sm text-white focus:border-amber-400 focus:outline-none" placeholder="Contoh: 6A" required>
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-bold text-jungle-200 mb-1">Nomor Absen *</label>
+                        <input type="text" id="studentAbsen" class="w-full bg-jungle-950 border border-jungle-700 rounded-xl px-3 py-2 text-sm text-white focus:border-amber-400 focus:outline-none" placeholder="Contoh: 12" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4 max-w-xl mx-auto mb-6 text-left">
+                <div class="bg-jungle-900/80 p-4 rounded-2xl border border-jungle-700 flex items-start space-x-3">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 mt-1 font-bold">1</div>
+                    <div>
+                        <h4 class="font-bold text-amber-300 text-sm">Level 1: Kuis HOTS Analisis</h4>
+                        <p class="text-xs text-jungle-300 mt-0.5">Uji pemahaman Keterbatasan AI, Bias, & GIGO lewat 10 soal analisis tingkat tinggi.</p>
+                    </div>
+                </div>
+                <div class="bg-jungle-900/80 p-4 rounded-2xl border border-jungle-700 flex items-start space-x-3">
+                    <div class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 mt-1 font-bold">2</div>
+                    <div>
+                        <h4 class="font-bold text-amber-300 text-sm">Level 2: Audit 10 Kasus</h4>
+                        <p class="text-xs text-jungle-300 mt-0.5">Bedah 10 studi kasus nyata, sampel foto real, dan jalankan simulasi error!</p>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="startLevel1()" class="bg-amber-500 hover:bg-amber-400 text-jungle-950 font-display font-bold text-lg px-8 py-3.5 rounded-2xl shadow-xl transition-all transform hover:scale-105 active:scale-95 inline-flex items-center space-x-2">
+                <span>Mulai Misi Detektif</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </section>
+
+        <!-- SCREEN 2: LEVEL 1 - KUIS PILIHAN GANDA -->
+        <section id="screenLevel1" class="hidden space-y-6">
+            <div class="bg-jungle-900 rounded-2xl p-4 border border-jungle-700 flex items-center justify-between">
+                <div>
+                    <span class="text-xs font-bold text-amber-400 uppercase tracking-wider">LEVEL 1: UJI ANALISIS HOTS</span>
+                    <h3 id="quizProgressText" class="text-lg font-bold text-white">Soal 1 dari 10</h3>
+                </div>
+                <div class="w-32 bg-jungle-950 h-3 rounded-full overflow-hidden border border-jungle-700">
+                    <div id="quizProgressBar" class="bg-amber-400 h-full w-10 transition-all duration-300"></div>
+                </div>
+            </div>
+
+            <div class="bg-jungle-900/90 rounded-3xl p-6 md:p-8 border border-jungle-700 shadow-xl">
+                <h3 id="quizQuestion" class="text-xl md:text-2xl font-bold text-amber-300 mb-6 leading-snug">
+                    <!-- Text Soal via JS -->
+                </h3>
+
+                <div id="quizOptions" class="space-y-3">
+                    <!-- Opsi Jawaban via JS -->
+                </div>
+
+                <div id="quizFeedback" class="hidden mt-6 p-4 rounded-2xl border text-sm font-semibold">
+                    <!-- Feedback penjelasan -->
+                </div>
+
+                <div class="mt-6 flex justify-end">
+                    <button id="btnNextQuestion" onclick="nextQuestion()" class="hidden bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-6 py-3 rounded-xl transition-all flex items-center space-x-2">
+                        <span>Soal Berikutnya</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCREEN 3: LEVEL 2 - LAB AUDIT 10 KASUS MISTERI -->
+        <section id="screenLevel2" class="hidden space-y-6">
+            <div class="bg-jungle-900 rounded-2xl p-4 border border-jungle-700 flex items-center justify-between">
+                <div>
+                    <span class="text-xs font-bold text-amber-400 uppercase tracking-wider">LEVEL 2: AUDIT 10 KASUS MISTERI NYATA</span>
+                    <h3 class="text-lg font-bold text-white">Pilih Kasus Misteri Untuk Diinvestigasi</h3>
+                </div>
+                <button onclick="pickRandomCase()" class="bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 border border-amber-500/40 text-xs font-bold px-3 py-2 rounded-xl transition-all flex items-center space-x-1">
+                    <i class="fa-solid fa-dice"></i>
+                    <span>Acak Kasus</span>
+                </button>
+            </div>
+
+            <!-- GRID DAFAR 10 KASUS MISTERI -->
+            <div id="caseGrid" class="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <!-- Diisi 10 kasus via JS -->
+            </div>
+
+            <!-- DETAIL KASUS YANG DIPILIH -->
+            <div id="activeCaseDetail" class="hidden space-y-6">
+                <!-- KARTU DATASET REAL -->
+                <div class="bg-jungle-900/90 rounded-3xl p-6 border border-jungle-700 shadow-xl">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-jungle-800">
+                        <div>
+                            <span id="caseBadge" class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Kasus #1</span>
+                            <h3 id="caseTitle" class="text-2xl font-bold text-amber-300">Judul Kasus</h3>
+                            <p id="caseSubtitle" class="text-sm text-jungle-300 mt-1">Subjudul Kasus</p>
+                        </div>
+                        <div class="bg-jungle-950 p-3 rounded-2xl border border-jungle-800 text-right">
+                            <span class="text-xs text-jungle-400 block">Rasio Bias Data Latihan:</span>
+                            <span id="caseBiasRatio" class="text-sm font-bold text-red-400">100% Bias</span>
+                        </div>
+                    </div>
+
+                    <!-- INSPEKTUR DATASET REAL PHOTOS -->
+                    <div class="mb-6">
+                        <h4 class="text-sm font-bold text-jungle-200 uppercase tracking-wider mb-3 flex items-center">
+                            <i class="fa-solid fa-images text-amber-400 mr-2"></i> Sampel Data Latihan AI yang Digunakan (12 Foto Real):
+                        </h4>
+                        
+                        <!-- BAR STATISTIK BIAS -->
+                        <div class="mb-4 bg-jungle-950 rounded-xl p-3 border border-jungle-800">
+                            <div class="flex justify-between text-xs font-bold mb-1">
+                                <span id="labelMajority" class="text-emerald-400">Data Utama (95%)</span>
+                                <span id="labelMinority" class="text-red-400">Data Hilang/Minoritas (5%)</span>
+                            </div>
+                            <div class="w-full bg-red-950 h-3 rounded-full overflow-hidden flex">
+                                <div id="barMajority" class="bg-emerald-500 h-full w-[95%]"></div>
+                                <div id="barMinority" class="bg-red-500 h-full w-[5%]"></div>
+                            </div>
+                        </div>
+
+                        <!-- GRID FOTO REAL DATASET (12 FOTO) -->
+                        <div id="datasetPhotoGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+                            <!-- Foto diisi via JS -->
+                        </div>
+                    </div>
+
+                    <!-- SIMULATOR AKSI & DIAGNOSIS -->
+                    <div class="bg-jungle-950 rounded-2xl p-5 border border-jungle-800 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-sm font-bold text-amber-400 uppercase tracking-wider flex items-center">
+                                <i class="fa-solid fa-flask mr-2"></i> Simulator Uji Coba AI di Dunia Nyata
+                            </h4>
+                            <button onclick="runSimulation()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-4 py-2 rounded-xl transition-all flex items-center space-x-1">
+                                <i class="fa-solid fa-play"></i>
+                                <span>Jalankan Simulasi Uji Coba</span>
+                            </button>
+                        </div>
+
+                        <div id="simulationCanvas" class="bg-jungle-900/60 rounded-xl p-6 text-center border border-dashed border-jungle-700 min-h-[120px] flex items-center justify-center">
+                            <p class="text-sm text-jungle-400">Klik tombol "Jalankan Simulasi Uji Coba" untuk melihat bagaimana AI merespons objek nyata di lapangan.</p>
+                        </div>
+
+                        <!-- DIAGNOSIS KEGAGALAN TERPERINCI (TANPA ALASAN / TANPA KARENA) -->
+                        <div id="failureDiagnosisBox" class="hidden bg-red-950/80 border-2 border-red-600/80 rounded-2xl p-4 text-sm font-semibold text-red-200">
+                            <div class="flex items-start space-x-3">
+                                <i class="fa-solid fa-triangle-exclamation text-red-400 text-xl mt-0.5 shrink-0"></i>
+                                <div>
+                                    <h5 class="text-red-300 font-bold uppercase text-xs tracking-wider mb-1">HASIL DIAGNOSIS KEGAGALAN AI:</h5>
+                                    <p id="failureReasonText" class="leading-relaxed font-bold text-red-200">FAKTA KEGAGALAN AKAN MUNCUL DI SINI.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FORM LAPORAN AUDIT SISWA -->
+                <div class="bg-jungle-900/90 rounded-3xl p-6 md:p-8 border border-jungle-700 shadow-xl space-y-4">
+                    <h3 class="text-xl font-bold text-amber-300 flex items-center">
+                        <i class="fa-solid fa-file-pen mr-2 text-amber-400"></i> Laporan Audit Detektif (Jawaban Siswa)
+                    </h3>
+                    <p class="text-xs text-jungle-300">Isi analisis kritis kamu berdasarkan sampel data latihan dan hasil simulasi di atas:</p>
+
+                    <div class="space-y-4 text-sm">
+                        <div>
+                            <label class="block font-bold text-jungle-200 mb-1">1. Apa masalah utama yang terjadi pada AI ini?</label>
+                            <textarea id="auditAns1" rows="2" class="w-full bg-jungle-950 border border-jungle-700 rounded-xl p-3 text-white focus:border-amber-400 focus:outline-none" placeholder="Jelaskan objek atau peristiwa yang salah ditebak oleh AI..."></textarea>
+                        </div>
+                        <div>
+                            <label class="block font-bold text-jungle-200 mb-1">2. Mengapa AI tersebut bisa mengalami kesalahan (Penyebab Bias)?</label>
+                            <textarea id="auditAns2" rows="2" class="w-full bg-jungle-950 border border-jungle-700 rounded-xl p-3 text-white focus:border-amber-400 focus:outline-none" placeholder="Tuliskan data apa yang dominan dan data apa yang hilang dari sampel foto..."></textarea>
+                        </div>
+                        <div>
+                            <label class="block font-bold text-jungle-200 mb-1">3. Apa dampak fatalnya di dunia nyata jika AI ini tetap dipakai?</label>
+                            <textarea id="auditAns3" rows="2" class="w-full bg-jungle-950 border border-jungle-700 rounded-xl p-3 text-white focus:border-amber-400 focus:outline-none" placeholder="Siapa yang dirugikan atau bahaya apa yang bisa muncul..."></textarea>
+                        </div>
+                        <div>
+                            <label class="block font-bold text-jungle-200 mb-1">4. Solusi: Apa yang harus kamu perbaiki pada Data Latihannya?</label>
+                            <textarea id="auditAns4" rows="2" class="w-full bg-jungle-950 border border-jungle-700 rounded-xl p-3 text-white focus:border-amber-400 focus:outline-none" placeholder="Sebutkan variasi data foto baru yang wajib ditambahkan agar AI adil..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 flex justify-end">
+                        <button onclick="submitAuditReport()" class="bg-amber-500 hover:bg-amber-400 text-jungle-950 font-display font-bold text-lg px-8 py-3 rounded-2xl shadow-xl transition-all transform hover:scale-105 active:scale-95">
+                            Selesaikan Misi & Cetak Sertifikat <i class="fa-solid fa-certificate ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCREEN 4: SERTIFIKAT LULUS -->
+        <section id="screenCertificate" class="hidden space-y-6">
+            <div class="bg-white text-slate-900 rounded-3xl p-8 border-4 border-amber-500 shadow-2xl printable-card relative overflow-hidden">
+                <div class="text-center border-b-2 border-amber-400 pb-6 mb-6">
+                    <span class="text-xs font-bold text-emerald-800 uppercase tracking-widest block mb-1">LEMBAR LULUS & AUDIT RESMI TIK SD</span>
+                    <h2 class="text-3xl md:text-4xl font-display font-bold text-amber-700">SERTIFIKAT AUDITOR DETEKTIF AI</h2>
+                    <p class="text-xs text-slate-600 mt-1">Diberikan atas keberhasilan menganalisis Keterbatasan AI & Data Bias</p>
+                </div>
+
+                <div class="space-y-4 mb-8">
+                    <!-- DISPLAY IDENTITAS SISWA -->
+                    <div class="grid grid-cols-3 gap-3 text-sm bg-amber-50 p-4 rounded-xl border border-amber-200">
+                        <div>
+                            <span class="text-xs text-slate-500 block">Nama Siswa:</span>
+                            <span id="certStudentName" class="font-bold text-slate-900 text-base">---</span>
+                        </div>
+                        <div>
+                            <span class="text-xs text-slate-500 block">Kelas:</span>
+                            <span id="certStudentClass" class="font-bold text-slate-900 text-base">---</span>
+                        </div>
+                        <div>
+                            <span class="text-xs text-slate-500 block">No. Absen:</span>
+                            <span id="certStudentAbsen" class="font-bold text-slate-900 text-base">---</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 text-sm bg-emerald-50 p-4 rounded-xl border border-emerald-200">
+                        <div>
+                            <span class="text-xs text-slate-500 block">Skor Kuis Teori Level 1:</span>
+                            <span id="certQuizScore" class="font-bold text-emerald-700 text-lg">100 / 100</span>
+                        </div>
+                        <div>
+                            <span class="text-xs text-slate-500 block">Status Audit Kasus:</span>
+                            <span class="font-bold text-amber-700 text-lg">LULUS & TUNTAS</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-sm mb-2 uppercase tracking-wider">Hasil Analisis Kasus Misteri Siswa:</h4>
+                        <div id="certReportDetails" class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2 text-xs text-slate-700">
+                            <!-- Diisi via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between pt-4 border-t border-slate-200 text-xs text-slate-500">
+                    <div>
+                        <span>Tanggal Praktik: Pertemuan 3 TIK / Informatics</span>
+                    </div>
+                    <div class="text-right">
+                        <span class="font-bold block text-slate-800">Guru TIK Kelas 6</span>
+                        <span>Validator Kurikulum AI</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="no-print flex justify-center space-x-4">
+                <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-6 py-3 rounded-xl transition-all flex items-center space-x-2">
+                    <i class="fa-solid fa-print"></i>
+                    <span>Cetak / Simpan PDF</span>
+                </button>
+                <button onclick="location.reload()" class="bg-jungle-800 hover:bg-jungle-700 text-white font-bold px-6 py-3 rounded-xl transition-all">
+                    Ulangi Misi
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="mt-8 text-center text-xs text-jungle-400/70 font-semibold no-print">
+        <p>Petualangan Detektif AI • Modul Praktik TIK / Informatics SD Kelas 6</p>
+    </footer>
+
+    <!-- JAVASCRIPT GAME LOGIC -->
+    <script>
+        // --- 10 MYSTERY CASES DATA (PESAN KEGAGALAN TANPA ALASAN) ---
+        const mysteryCases = [
+            {
+                id: "case-1",
+                title: "Robot Pembersih Laut & Ikan Langka",
+                subtitle: "Ekosistem Terumbu Karang Bakau",
+                icon: "fa-fish",
+                biasRatioText: "100% Ikan Merah vs 0% Ikan Kuning",
+                majorityPercent: "100%",
+                minorityPercent: "0%",
+                datasetItems: [
+                    { name: "Ikan Merah #1", img: "https://images.unsplash.com/photo-1524704654690-b56c05c78a00?w=200&auto=format&fit=crop&q=80", tag: "IKAN" },
+                    { name: "Ikan Merah #2", img: "https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?w=200&auto=format&fit=crop&q=80", tag: "IKAN" },
+                    { name: "Ikan Merah #3", img: "https://images.unsplash.com/photo-1535591273668-578e31182c4f?w=200&auto=format&fit=crop&q=80", tag: "IKAN" },
+                    { name: "Ikan Merah #4", img: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=200&auto=format&fit=crop&q=80", tag: "IKAN" },
+                    { name: "Ikan Merah #5", img: "https://images.unsplash.com/photo-1520301255226-bf5f144451c1?w=200&auto=format&fit=crop&q=80", tag: "IKAN" },
+                    { name: "Ikan Merah #6", img: "https://images.unsplash.com/photo-1571752726703-5e7d1f6a986d?w=200&auto=format&fit=crop&q=80", tag: "IKAN" },
+                    { name: "Ikan Merah #7", img: "https://images.unsplash.com/photo-1524704654690-b56c05c78a00?w=200&auto=format&fit=crop&q=80", tag: "IKAN" },
+                    { name: "Ikan Merah #8", img: "https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?w=200&auto=format&fit=crop&q=80", tag: "IKAN" },
+                    { name: "Botol Sampah", img: "https://images.unsplash.com/photo-1621451537084-482c73073a0f?w=200&auto=format&fit=crop&q=80", tag: "SAMPAH" },
+                    { name: "Plastik Laut", img: "https://images.unsplash.com/photo-1605600659873-d808a13e4d2a?w=200&auto=format&fit=crop&q=80", tag: "SAMPAH" },
+                    { name: "Kaleng Bekas", img: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&auto=format&fit=crop&q=80", tag: "SAMPAH" },
+                    { name: "Sedotan Plastik", img: "https://images.unsplash.com/photo-1591193686104-fdeba4d03d88?w=200&auto=format&fit=crop&q=80", tag: "SAMPAH" }
+                ],
+                simType: "ocean",
+                failureReasonDetail: "DETEKSI GAGAL: AI mendeteksi Ikan Segitiga Kuning sebagai 'SAMPAH PLASTIK' dan membuangnya ke tempat sampah!"
+            },
+            {
+                id: "case-2",
+                title: "Mobil Otonom & Pejalan Kaki Malam",
+                subtitle: "Jalan Raya Hutan Gelap Malam Hari",
+                icon: "fa-car",
+                biasRatioText: "92% Siang Hari vs 8% Malam Hari",
+                majorityPercent: "92%",
+                minorityPercent: "8%",
+                datasetItems: [
+                    { name: "Pejalan Siang #1", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80", tag: "MANUSIA" },
+                    { name: "Pejalan Siang #2", img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&auto=format&fit=crop&q=80", tag: "MANUSIA" },
+                    { name: "Pejalan Siang #3", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80", tag: "MANUSIA" },
+                    { name: "Pejalan Siang #4", img: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&auto=format&fit=crop&q=80", tag: "MANUSIA" },
+                    { name: "Pejalan Siang #5", img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&auto=format&fit=crop&q=80", tag: "MANUSIA" },
+                    { name: "Pejalan Siang #6", img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&auto=format&fit=crop&q=80", tag: "MANUSIA" },
+                    { name: "Pejalan Siang #7", img: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200&auto=format&fit=crop&q=80", tag: "MANUSIA" },
+                    { name: "Pejalan Siang #8", img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=200&auto=format&fit=crop&q=80", tag: "MANUSIA" },
+                    { name: "Pejalan Siang #9", img: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=200&auto=format&fit=crop&q=80", tag: "MANUSIA" },
+                    { name: "Pejalan Siang #10", img: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=200&auto=format&fit=crop&q=80", tag: "MANUSIA" },
+                    { name: "Pejalan Siang #11", img: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=200&auto=format&fit=crop&q=80", tag: "MANUSIA" },
+                    { name: "Bayangan Pohon", img: "https://images.unsplash.com/photo-1448375240586-882707db888b?w=200&auto=format&fit=crop&q=80", tag: "NON-MANUSIA" }
+                ],
+                simType: "car",
+                failureReasonDetail: "DETEKSI GAGAL: Mobil TIDAK MENGEREM saat ada Pejalan Kaki menyeberang di Malam Hari!"
+            },
+            {
+                id: "case-3",
+                title: "Kamera Pengenal Wajah Kepolisian",
+                subtitle: "Sistem Pemindai Keamanan Pos Hutan",
+                icon: "fa-id-card",
+                biasRatioText: "100% Kulit Cerah vs 0% Kulit Gelap",
+                majorityPercent: "100%",
+                minorityPercent: "0%",
+                datasetItems: [
+                    { name: "Wajah Cerah #1", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80", tag: "WARGA AMAN" },
+                    { name: "Wajah Cerah #2", img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&auto=format&fit=crop&q=80", tag: "WARGA AMAN" },
+                    { name: "Wajah Cerah #3", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80", tag: "WARGA AMAN" },
+                    { name: "Wajah Cerah #4", img: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&auto=format&fit=crop&q=80", tag: "WARGA AMAN" },
+                    { name: "Wajah Cerah #5", img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&auto=format&fit=crop&q=80", tag: "WARGA AMAN" },
+                    { name: "Wajah Cerah #6", img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&auto=format&fit=crop&q=80", tag: "WARGA AMAN" },
+                    { name: "Wajah Cerah #7", img: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200&auto=format&fit=crop&q=80", tag: "WARGA AMAN" },
+                    { name: "Wajah Cerah #8", img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=200&auto=format&fit=crop&q=80", tag: "WARGA AMAN" },
+                    { name: "Wajah Cerah #9", img: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=200&auto=format&fit=crop&q=80", tag: "WARGA AMAN" },
+                    { name: "Wajah Cerah #10", img: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=200&auto=format&fit=crop&q=80", tag: "WARGA AMAN" },
+                    { name: "Wajah Cerah #11", img: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=200&auto=format&fit=crop&q=80", tag: "WARGA AMAN" },
+                    { name: "Wajah Cerah #12", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80", tag: "WARGA AMAN" }
+                ],
+                simType: "face",
+                failureReasonDetail: "DETEKSI GAGAL: AI mendeteksi Warga Baik Berkulit Gelap sebagai 'PENJAHAT DPO BERBAHAYA'!"
+            },
+            {
+                id: "case-4",
+                title: "AI Pemindai Kanker Kulit Dokter",
+                subtitle: "Klinik Kesehatan Hutan Rimba",
+                icon: "fa-stethoscope",
+                biasRatioText: "100% Kulit Terang vs 0% Kulit Gelap",
+                majorityPercent: "100%",
+                minorityPercent: "0%",
+                datasetItems: [
+                    { name: "Kanker Kulit Terang #1", img: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=200&auto=format&fit=crop&q=80", tag: "KANKER" },
+                    { name: "Kanker Kulit Terang #2", img: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=200&auto=format&fit=crop&q=80", tag: "KANKER" },
+                    { name: "Kanker Kulit Terang #3", img: "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=200&auto=format&fit=crop&q=80", tag: "KANKER" },
+                    { name: "Kanker Kulit Terang #4", img: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=200&auto=format&fit=crop&q=80", tag: "KANKER" },
+                    { name: "Kanker Kulit Terang #5", img: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=200&auto=format&fit=crop&q=80", tag: "KANKER" },
+                    { name: "Kanker Kulit Terang #6", img: "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=200&auto=format&fit=crop&q=80", tag: "KANKER" },
+                    { name: "Kulit Sehat Terang #7", img: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=200&auto=format&fit=crop&q=80", tag: "SEHAT" },
+                    { name: "Kulit Sehat Terang #8", img: "https://images.unsplash.com/photo-1512290900673-700200827282?w=200&auto=format&fit=crop&q=80", tag: "SEHAT" },
+                    { name: "Kulit Sehat Terang #9", img: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=200&auto=format&fit=crop&q=80", tag: "SEHAT" },
+                    { name: "Kulit Sehat Terang #10", img: "https://images.unsplash.com/photo-1512290900673-700200827282?w=200&auto=format&fit=crop&q=80", tag: "SEHAT" },
+                    { name: "Kulit Sehat Terang #11", img: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=200&auto=format&fit=crop&q=80", tag: "SEHAT" },
+                    { name: "Kulit Sehat Terang #12", img: "https://images.unsplash.com/photo-1512290900673-700200827282?w=200&auto=format&fit=crop&q=80", tag: "SEHAT" }
+                ],
+                simType: "health",
+                failureReasonDetail: "DETEKSI GAGAL: AI mendiagnosis bercak Kanker Kulit pada Pasien Berkulit Sawo Matang sebagai 'TAHI LALAT BIASA'!"
+            },
+            {
+                id: "case-5",
+                title: "AI Rekrutmen & Penyeleksi Kerja",
+                subtitle: "Markas Penjaga Hutan Rimbawan",
+                icon: "fa-briefcase",
+                biasRatioText: "92% Laki-Laki vs 8% Perempuan",
+                majorityPercent: "92%",
+                minorityPercent: "8%",
+                datasetItems: [
+                    { name: "Lamaran Laki #1", img: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&auto=format&fit=crop&q=80", tag: "LULUS" },
+                    { name: "Lamaran Laki #2", img: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=200&auto=format&fit=crop&q=80", tag: "LULUS" },
+                    { name: "Lamaran Laki #3", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80", tag: "LULUS" },
+                    { name: "Lamaran Laki #4", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80", tag: "LULUS" },
+                    { name: "Lamaran Laki #5", img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&auto=format&fit=crop&q=80", tag: "LULUS" },
+                    { name: "Lamaran Laki #6", img: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200&auto=format&fit=crop&q=80", tag: "LULUS" },
+                    { name: "Lamaran Laki #7", img: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=200&auto=format&fit=crop&q=80", tag: "LULUS" },
+                    { name: "Lamaran Laki #8", img: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=200&auto=format&fit=crop&q=80", tag: "LULUS" },
+                    { name: "Lamaran Laki #9", img: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&auto=format&fit=crop&q=80", tag: "LULUS" },
+                    { name: "Lamaran Laki #10", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80", tag: "LULUS" },
+                    { name: "Lamaran Laki #11", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80", tag: "LULUS" },
+                    { name: "Lamaran Perem #1", img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&auto=format&fit=crop&q=80", tag: "TOLAK" }
+                ],
+                simType: "recruit",
+                failureReasonDetail: "DETEKSI GAGAL: AI MENOLAK OTOMATIS berkas lamaran dari pelamar Perempuan yang sangat berprestasi!"
+            },
+            {
+                id: "case-6",
+                title: "Robot Kasir Swalayan & Kemasan Baru",
+                subtitle: "Kantin Pos Peneliti Hutan",
+                icon: "fa-cart-shopping",
+                biasRatioText: "100% Kemasan Lama vs 0% Kemasan Baru",
+                majorityPercent: "100%",
+                minorityPercent: "0%",
+                datasetItems: [
+                    { name: "Botol Lama #1", img: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=200&auto=format&fit=crop&q=80", tag: "PRODUK" },
+                    { name: "Botol Lama #2", img: "https://images.unsplash.com/photo-1560023907-5f339617ea30?w=200&auto=format&fit=crop&q=80", tag: "PRODUK" },
+                    { name: "Botol Lama #3", img: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=200&auto=format&fit=crop&q=80", tag: "PRODUK" },
+                    { name: "Botol Lama #4", img: "https://images.unsplash.com/photo-1560023907-5f339617ea30?w=200&auto=format&fit=crop&q=80", tag: "PRODUK" },
+                    { name: "Botol Lama #5", img: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=200&auto=format&fit=crop&q=80", tag: "PRODUK" },
+                    { name: "Botol Lama #6", img: "https://images.unsplash.com/photo-1560023907-5f339617ea30?w=200&auto=format&fit=crop&q=80", tag: "PRODUK" },
+                    { name: "Botol Lama #7", img: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=200&auto=format&fit=crop&q=80", tag: "PRODUK" },
+                    { name: "Botol Lama #8", img: "https://images.unsplash.com/photo-1560023907-5f339617ea30?w=200&auto=format&fit=crop&q=80", tag: "PRODUK" },
+                    { name: "Botol Lama #9", img: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=200&auto=format&fit=crop&q=80", tag: "PRODUK" },
+                    { name: "Botol Lama #10", img: "https://images.unsplash.com/photo-1560023907-5f339617ea30?w=200&auto=format&fit=crop&q=80", tag: "PRODUK" },
+                    { name: "Botol Lama #11", img: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=200&auto=format&fit=crop&q=80", tag: "PRODUK" },
+                    { name: "Botol Lama #12", img: "https://images.unsplash.com/photo-1560023907-5f339617ea30?w=200&auto=format&fit=crop&q=80", tag: "PRODUK" }
+                ],
+                simType: "cashier",
+                failureReasonDetail: "DETEKSI GAGAL: Robot Kasir mendeteksi Botol Kemasan Ramah Lingkungan Baru sebagai 'BARANG CURIAN'!"
+            },
+            {
+                id: "case-7",
+                title: "AI Penyaring Komentar Jahat (Modul Teks)",
+                subtitle: "Forum Komunikasi Warga Desa Hutan",
+                icon: "fa-comments",
+                biasRatioText: "100% Bahasa Formal vs 0% Bahasa Daerah",
+                majorityPercent: "100%",
+                minorityPercent: "0%",
+                datasetItems: [
+                    { name: "Teks Formal #1", img: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=200&auto=format&fit=crop&q=80", tag: "AMAN" },
+                    { name: "Teks Formal #2", img: "https://images.unsplash.com/photo-1517842645767-c639042777db?w=200&auto=format&fit=crop&q=80", tag: "AMAN" },
+                    { name: "Teks Formal #3", img: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=200&auto=format&fit=crop&q=80", tag: "AMAN" },
+                    { name: "Teks Formal #4", img: "https://images.unsplash.com/photo-1517842645767-c639042777db?w=200&auto=format&fit=crop&q=80", tag: "AMAN" },
+                    { name: "Teks Formal #5", img: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=200&auto=format&fit=crop&q=80", tag: "AMAN" },
+                    { name: "Teks Formal #6", img: "https://images.unsplash.com/photo-1517842645767-c639042777db?w=200&auto=format&fit=crop&q=80", tag: "AMAN" },
+                    { name: "Teks Formal #7", img: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=200&auto=format&fit=crop&q=80", tag: "AMAN" },
+                    { name: "Teks Formal #8", img: "https://images.unsplash.com/photo-1517842645767-c639042777db?w=200&auto=format&fit=crop&q=80", tag: "AMAN" },
+                    { name: "Teks Formal #9", img: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=200&auto=format&fit=crop&q=80", tag: "AMAN" },
+                    { name: "Teks Formal #10", img: "https://images.unsplash.com/photo-1517842645767-c639042777db?w=200&auto=format&fit=crop&q=80", tag: "AMAN" },
+                    { name: "Teks Formal #11", img: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=200&auto=format&fit=crop&q=80", tag: "AMAN" },
+                    { name: "Teks Formal #12", img: "https://images.unsplash.com/photo-1517842645767-c639042777db?w=200&auto=format&fit=crop&q=80", tag: "AMAN" }
+                ],
+                simType: "filter",
+                failureReasonDetail: "DETEKSI GAGAL: AI MENGHAPUS OTOMATIS komentar ucapan selamat yang menggunakan Bahasa Daerah ('Maturnuwun lur, mantap kali!')!"
+            },
+            {
+                id: "case-8",
+                title: "AI Deteksi Suara Satwa Langka",
+                subtitle: "Stasiun Mikrofon Peneliti Burung Hutan",
+                icon: "fa-crow",
+                biasRatioText: "100% Suara Jernih vs 0% Suara Hujan",
+                majorityPercent: "100%",
+                minorityPercent: "0%",
+                datasetItems: [
+                    { name: "Audio Jernih #1", img: "https://images.unsplash.com/photo-1444464666168-49d633b86797?w=200&auto=format&fit=crop&q=80", tag: "BURUNG" },
+                    { name: "Audio Jernih #2", img: "https://images.unsplash.com/photo-1452570053594-1b985d6ea890?w=200&auto=format&fit=crop&q=80", tag: "BURUNG" },
+                    { name: "Audio Jernih #3", img: "https://images.unsplash.com/photo-1444464666168-49d633b86797?w=200&auto=format&fit=crop&q=80", tag: "BURUNG" },
+                    { name: "Audio Jernih #4", img: "https://images.unsplash.com/photo-1452570053594-1b985d6ea890?w=200&auto=format&fit=crop&q=80", tag: "BURUNG" },
+                    { name: "Audio Jernih #5", img: "https://images.unsplash.com/photo-1444464666168-49d633b86797?w=200&auto=format&fit=crop&q=80", tag: "BURUNG" },
+                    { name: "Audio Jernih #6", img: "https://images.unsplash.com/photo-1452570053594-1b985d6ea890?w=200&auto=format&fit=crop&q=80", tag: "BURUNG" },
+                    { name: "Audio Jernih #7", img: "https://images.unsplash.com/photo-1444464666168-49d633b86797?w=200&auto=format&fit=crop&q=80", tag: "BURUNG" },
+                    { name: "Audio Jernih #8", img: "https://images.unsplash.com/photo-1452570053594-1b985d6ea890?w=200&auto=format&fit=crop&q=80", tag: "BURUNG" },
+                    { name: "Audio Jernih #9", img: "https://images.unsplash.com/photo-1444464666168-49d633b86797?w=200&auto=format&fit=crop&q=80", tag: "BURUNG" },
+                    { name: "Audio Jernih #10", img: "https://images.unsplash.com/photo-1452570053594-1b985d6ea890?w=200&auto=format&fit=crop&q=80", tag: "BURUNG" },
+                    { name: "Audio Jernih #11", img: "https://images.unsplash.com/photo-1444464666168-49d633b86797?w=200&auto=format&fit=crop&q=80", tag: "BURUNG" },
+                    { name: "Audio Jernih #12", img: "https://images.unsplash.com/photo-1452570053594-1b985d6ea890?w=200&auto=format&fit=crop&q=80", tag: "BURUNG" }
+                ],
+                simType: "audio",
+                failureReasonDetail: "DETEKSI GAGAL: AI GAGAL MENGENALI suara nyanyian Burung Cendrawasih di tengah kondisi Hujan Deras!"
+            },
+            {
+                id: "case-9",
+                title: "AI Pemilah Hasil Panen Mangga",
+                subtitle: "Gudang Pertanian Perkebunan Hutan",
+                icon: "fa-lemon",
+                biasRatioText: "100% Mangga Hijau Mulus vs 0% Mangga Matang",
+                majorityPercent: "100%",
+                minorityPercent: "0%",
+                datasetItems: [
+                    { name: "Mangga Hijau #1", img: "https://images.unsplash.com/photo-1553279768-865429fa0078?w=200&auto=format&fit=crop&q=80", tag: "MANGGA" },
+                    { name: "Mangga Hijau #2", img: "https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?w=200&auto=format&fit=crop&q=80", tag: "MANGGA" },
+                    { name: "Mangga Hijau #3", img: "https://images.unsplash.com/photo-1553279768-865429fa0078?w=200&auto=format&fit=crop&q=80", tag: "MANGGA" },
+                    { name: "Mangga Hijau #4", img: "https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?w=200&auto=format&fit=crop&q=80", tag: "MANGGA" },
+                    { name: "Mangga Hijau #5", img: "https://images.unsplash.com/photo-1553279768-865429fa0078?w=200&auto=format&fit=crop&q=80", tag: "MANGGA" },
+                    { name: "Mangga Hijau #6", img: "https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?w=200&auto=format&fit=crop&q=80", tag: "MANGGA" },
+                    { name: "Mangga Hijau #7", img: "https://images.unsplash.com/photo-1553279768-865429fa0078?w=200&auto=format&fit=crop&q=80", tag: "MANGGA" },
+                    { name: "Mangga Hijau #8", img: "https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?w=200&auto=format&fit=crop&q=80", tag: "MANGGA" },
+                    { name: "Mangga Hijau #9", img: "https://images.unsplash.com/photo-1553279768-865429fa0078?w=200&auto=format&fit=crop&q=80", tag: "MANGGA" },
+                    { name: "Mangga Hijau #10", img: "https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?w=200&auto=format&fit=crop&q=80", tag: "MANGGA" },
+                    { name: "Mangga Hijau #11", img: "https://images.unsplash.com/photo-1553279768-865429fa0078?w=200&auto=format&fit=crop&q=80", tag: "MANGGA" },
+                    { name: "Mangga Hijau #12", img: "https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?w=200&auto=format&fit=crop&q=80", tag: "MANGGA" }
+                ],
+                simType: "mangga",
+                failureReasonDetail: "DETEKSI GAGAL: AI mendeteksi Mangga Matang Manis Berwarna Kuning sebagai 'BUAH BUSUK' dan membuangnya!"
+            },
+            {
+                id: "case-10",
+                title: "AI Prediksi Badai & Cuaca Ekstrem",
+                subtitle: "Pos Pengamatan BMKG Hutan Tropis",
+                icon: "fa-cloud-showers-heavy",
+                biasRatioText: "100% Data Kemarau vs 0% Data Badai Ekstrem",
+                majorityPercent: "100%",
+                minorityPercent: "0%",
+                datasetItems: [
+                    { name: "Kemarau #1", img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=200&auto=format&fit=crop&q=80", tag: "CERAH" },
+                    { name: "Kemarau #2", img: "https://images.unsplash.com/photo-1519046904884-53103b34b206?w=200&auto=format&fit=crop&q=80", tag: "CERAH" },
+                    { name: "Kemarau #3", img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=200&auto=format&fit=crop&q=80", tag: "CERAH" },
+                    { name: "Kemarau #4", img: "https://images.unsplash.com/photo-1519046904884-53103b34b206?w=200&auto=format&fit=crop&q=80", tag: "CERAH" },
+                    { name: "Kemarau #5", img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=200&auto=format&fit=crop&q=80", tag: "CERAH" },
+                    { name: "Kemarau #6", img: "https://images.unsplash.com/photo-1519046904884-53103b34b206?w=200&auto=format&fit=crop&q=80", tag: "CERAH" },
+                    { name: "Kemarau #7", img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=200&auto=format&fit=crop&q=80", tag: "CERAH" },
+                    { name: "Kemarau #8", img: "https://images.unsplash.com/photo-1519046904884-53103b34b206?w=200&auto=format&fit=crop&q=80", tag: "CERAH" },
+                    { name: "Kemarau #9", img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=200&auto=format&fit=crop&q=80", tag: "CERAH" },
+                    { name: "Kemarau #10", img: "https://images.unsplash.com/photo-1519046904884-53103b34b206?w=200&auto=format&fit=crop&q=80", tag: "CERAH" },
+                    { name: "Kemarau #11", img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=200&auto=format&fit=crop&q=80", tag: "CERAH" },
+                    { name: "Kemarau #12", img: "https://images.unsplash.com/photo-1519046904884-53103b34b206?w=200&auto=format&fit=crop&q=80", tag: "CERAH" }
+                ],
+                simType: "weather",
+                failureReasonDetail: "DETEKSI GAGAL: AI melaporkan 'CUACA CERAH AMAN' padahal Badai Topan Besar sedang mendekat!"
+            }
+        ];
+
+        // --- LEVEL 1 KUIS DATA (10 SOAL HOTS ANALISIS TINGKAT TINGGI) ---
+        const quizData = [
+            {
+                question: "1. Sebuah perusahaan teknologi mengembangkan sistem AI untuk memprediksi kelulusan siswa. Mengapa sistem AI ini tetap disebut 'memiliki keterbatasan dasar' meskipun diprogram oleh programmer paling jenius di dunia?",
+                options: [
+                    "Sebab sistem AI tidak pernah memiliki akal sehat (common sense) dan keputusan logisnya murni dibatasi oleh distribusi data historis yang dimasukkan manusia.",
+                    "Sebab program komputer akan secara otomatis mengalami kerusakan hardware jika memproses data angka yang terlalu rumit.",
+                    "Sebab AI hanya dapat membaca data berbasis teks dan tidak mampu membaca data berupa angka koma atau desimal.",
+                    "Sebab kapasitas memori RAM komputer tidak akan pernah cukup untuk menyimpan data sekolah."
+                ],
+                answer: 0,
+                explanation: "Tepat! Keterbatasan utama AI adalah ketidakmampuannya memiliki akal sehat alami. AI hanya mengkalkulasi statistik pola dari data historis yang diberikan manusia."
+            },
+            {
+                question: "2. Suatu tim peneliti memasukkan 10.000 foto kucing oranye ke dalam sistem Machine Learning. Saat diuji dengan foto kucing hitam di dalam ruang remang, AI memprediksinya sebagai 'Bayangan Benda'. Manakah analisis teknis yang paling tepat menjelaskan fenomena 'Data Bias' ini?",
+                options: [
+                    "Sistem AI tersebut mengalami kelebihan beban data (Overloading) sehingga kamera pemindai terbakar.",
+                    "Data Latihan mengalami ketidakseimbangan variabel (Bias Sampel), di mana AI salah mengidentifikasi warna bulu oranye sebagai ciri mutlak (pola sejati) dari seekor kucing.",
+                    "Kucing hitam memiliki gelombang radiasi yang tidak bisa ditangkap oleh sensor kamera digital biasa.",
+                    "Program AI sengaja menolak kucing hitam karena algoritma komputer hanya menyukai warna-warni cerah."
+                ],
+                answer: 1,
+                explanation: "Luar biasa! Karena sampelnya bias (cuma oranye), AI mengira warna oranye adalah syarat mutlak kucing. Saat ada warna hitam, AI gagal mengenali polanya."
+            },
+            {
+                question: "3. Prinsip GIGO (Garbage In, Garbage Out) sering menjadi ancaman fatal dalam implementasi AI. Manakah skenario berikut yang paling akurat menggambarkan berlakunya prinsip GIGO di dunia nyata?",
+                options: [
+                    "Komputer laboratorium mati mendadak saat siswa sedang mengunduh file gambar dari internet.",
+                    "Dokter memasukkan data hasil rekam medis yang keliru dan tidak lengkap ke dalam AI medis, sehingga AI mengeluarkan diagnosis penyakit yang salah dan membahayakan pasien.",
+                    "Siswa lupa menyimpan (save) dokumen tugas di aplikasi pengolah kata sebelum mematikan komputer.",
+                    "Sistem kamera CCTV sekolah menghasilkan gambar yang agak kabur saat kondisi hujan deras."
+                ],
+                answer: 1,
+                explanation: "Sangat tepat! Masukan data medis yang buruk/salah (Garbage In) menghasilkan diagnosis berbahaya (Garbage Out). Itulah inti dari hukum GIGO."
+            },
+            {
+                question: "4. Pada eksperimen Teachable Machine di kelas, model AI sangat akurat mengenali tangan siswa, tetapi gagal total dan bingung saat menguji tangan Guru. Mengapa fenomena ini terjadi dari sudut pandang pemrosesan pola AI?",
+                options: [
+                    "AI hanya menghafal ciri visual spesifik tangan siswa (seperti ukuran kecil dan tekstur kulit) alih-alih mempelajari Pola Sejati spasial jari tangan manusia secara umum.",
+                    "Tangan guru memiliki gelombang magnetik yang membiaskan sinyal webcam komputer.",
+                    "Aplikasi Teachable Machine hanya dirancang khusus oleh Google untuk pengguna berusia di bawah 12 tahun.",
+                    "Kamera webcam secara otomatis mengunci fokus hanya pada benda-benda berwarna terang."
+                ],
+                answer: 0,
+                explanation: "Hebat! AI yang mengalami bias hanya menghafal 'fitur dangkal' (ukuran/warna kulit siswa) bukannya mempelajari 'pola sejati' geometri tangan."
+            },
+            {
+                question: "5. Di sebuah pelabuhan, Robot Pembersih Sampah AI dilatih menggunakan 5.000 foto botol plastik dan 5.000 foto ikan merah. Ketika ada species Ikan Terumbu Karang bergaris kuning-hitam melintas, robot tersebut menangkapnya. Mengapa algoritma AI membuat keputusan berbahaya tersebut?",
+                options: [
+                    "Robot AI mengalami kerusakan baterai saat berada di dalam air laut yang asin.",
+                    "Ekstraksi fitur AI mengalami kekeliruan klasifikasi karena pola garis kuning-hitam tidak terdapat dalam himpunan data latihan 'Ikan', sehingga dianggap sebagai objek 'Sampah'.",
+                    "Ikan terumbu karang berenang terlalu cepat sehingga kamera robot tidak sempat mengambil gambar.",
+                    "Robot AI sengaja membersihkan laut dari semua objek yang bergerak di dekat terumbu karang."
+                ],
+                answer: 1,
+                explanation: "Tepat! Karena himpunan data latihan ikan tidak memiliki variasi garis kuning-hitam, AI secara keliru mengklasifikasikannya sebagai objek selain ikan (sampah)."
+            },
+            {
+                question: "6. Sebuah mobil otonom tanpa pengemudi diuji di jalan raya. Kamera AI berhasil mengenali pejalan kaki berkaus polos, namun menabrak seorang warga yang memakai kostum badut unik. Apakah akar penyebab kegagalan sistem penglihatan AI (Computer Vision) tersebut?",
+                options: [
+                    "Sensor radar mobil tidak dapat berfungsi jika berhadapan dengan kain pakaian berwarna-warni.",
+                    "Dataset pelatihan mobil mengalami 'Data Gap' (Ketiadaan Sampel), sehingga bentuk visual kostum badut tidak cocok dengan Pola Rangka Manusia yang dihafalkan AI.",
+                    "Mesin mobil secara otomatis mempercepat laju kendaraan saat mendeteksi warna-warna mencolok.",
+                    "Pejalan kaki berkostum badut memancarkan frekuensi radio yang mengganggu navigasi GPS mobil."
+                ],
+                answer: 1,
+                explanation: "Benar! Ketiadaan contoh kostum unik di data latihan membuat visual badut tidak cocok dengan pola kaku yang dihafalkan AI sebagai 'manusia'."
+            },
+            {
+                question: "7. Mengapa penambahan jumlah data latihan saja (misal dari 1.000 menjadi 100.000 data) BELUM TENTU bisa menghilangkan Bias pada AI jika tidak memperhatikan variasi data?",
+                options: [
+                    "Sebab semakin banyak data yang dimasukkan, komputer akan otomatis menghapus data-data yang lama secara acak.",
+                    "Sebab jika 100.000 data tersebut seluruhnya homogen (seragam/sama jenis), AI hanya akan semakin 'kuat memihak' dan memperparah Bias yang ada.",
+                    "Sebab algoritma AI hanya mampu memproses maksimal 500 foto dalam satu waktu.",
+                    "Sebab data yang terlalu banyak akan membuat proses prediksi AI berjalan sangat lambat hingga berhenti."
+                ],
+                answer: 1,
+                explanation: "Analisis luar biasa! Kuantitas data tidak menjamin keadilan. Jika 100.000 data isinya seragam (homogen), bias AI justru akan semakin parah!"
+            },
+            {
+                question: "8. Penggunaan AI untuk menyeleksi berkas lamaran kerja di sebuah perusahaan besar ternyata secara otomatis menolak 99% pelamar perempuan. Siapakah yang secara etis dan teknis paling bertanggung jawab atas diskriminasi sistematis ini?",
+                options: [
+                    "Komputer server tempat program AI dijalankan karena membuat keputusan secara independen.",
+                    "Tim Pengembang/Manusia yang memberi Data Latihan berupa riwayat penerimaan karyawan masa lalu yang memang sudah diskriminatif dan memihak.",
+                    "Para pelamar kerja perempuan karena tidak mencantumkan kata kunci yang disukai oleh mesin.",
+                    "Jaringan internet yang mengirimkan berkas dokumen lamaran kerja secara lambat."
+                ],
+                answer: 1,
+                explanation: "Tepat sekali! Manusia pembuat AI bertanggung jawab penuh karena memberi data historis masa lalu yang sudah tidak adil untuk melatih AI."
+            },
+            {
+                question: "9. Mengapa dalam konsep 'Human-in-the-Loop' (Manusia dalam Pengawasan AI), keputusan krusial seperti diagnosis medis berat atau vonis hukum TIDAK BOLEH diserahkan 100% secara otomatis kepada AI?",
+                options: [
+                    "Sebab komputer tidak bisa mencetak dokumen kertas laporan hasil diagnosis secara langsung.",
+                    "Sebab AI tidak memiliki pemahaman konteks moral, empati, dan kewaspadaan terhadap kesalahan prediksi akibat keterbatasan data.",
+                    "Sebab harga perangkat lunak AI akan menjadi sangat mahal jika digunakan tanpa pengawasan manusia.",
+                    "Sebab aturan hukum internasional melarang komputer menyalakan layar lebih dari 8 jam sehari."
+                ],
+                answer: 1,
+                explanation: "Benar! AI tidak memiliki empati, moral, dan akal sehat untuk memahami konteks krisis. Manusia harus selalu menjadi pengawas utama."
+            },
+            {
+                question: "10. Manakah tindakan teknis terbaik yang harus dilakukan seorang Auditor AI untuk memperbaiki sistem AI pemindai wajah keamanan bandara yang sering salah mengenali penumpang dari suku tertentu?",
+                options: [
+                    "Mengganti seluruh kamera bandara dengan kamera resolusi paling tinggi di dunia.",
+                    "Melakukan Re-training (Pelatihan Ulang) dengan menambahkan sampel data wajah yang inklusif, seimbang, dan mewakili seluruh variasi etnis serta ras secara adil.",
+                    "Menghapus seluruh program AI dan menggantinya dengan pintu manual biasa tanpa teknologi.",
+                    "Meminta penumpang dari suku tersebut untuk selalu mengenakan kacamata hitam saat melewati pemindai."
+                ],
+                answer: 1,
+                explanation: "Sempurna! Solusi utama mengatasi bias adalah Melakukan Re-training menggunakan dataset baru yang beragam, inklusif, dan seimbang!"
+            }
+        ];
+
+        // --- GAME STATE VARIABLES ---
+        let currentScore = 0;
+        let currentQuizIndex = 0;
+        let selectedCase = null;
+
+        let studentData = {
+            name: "",
+            class: "",
+            absen: ""
+        };
+
+        // --- INIT GAME ---
+        window.onload = function() {
+            renderCaseGrid();
+        };
+
+        function updateScore(points) {
+            currentScore += points;
+            document.getElementById("scoreBadge").innerText = "Skor: " + currentScore;
+        }
+
+        // --- SCREEN NAVIGATION ---
+        function showScreen(screenId) {
+            document.getElementById("screenLanding").classList.add("hidden");
+            document.getElementById("screenLevel1").classList.add("hidden");
+            document.getElementById("screenLevel2").classList.add("hidden");
+            document.getElementById("screenCertificate").classList.add("hidden");
+
+            document.getElementById(screenId).classList.remove("hidden");
+        }
+
+        function startLevel1() {
+            const name = document.getElementById("studentName").value.trim();
+            const sClass = document.getElementById("studentClass").value.trim();
+            const absen = document.getElementById("studentAbsen").value.trim();
+
+            if (!name || !sClass || !absen) {
+                alert("Harap lengkapi Identitas Siswa (Nama, Kelas, dan Nomor Absen) terlebih dahulu!");
+                return;
+            }
+
+            studentData.name = name;
+            studentData.class = sClass;
+            studentData.absen = absen;
+
+            showScreen("screenLevel1");
+            currentQuizIndex = 0;
+            loadQuizQuestion();
+        }
+
+        // --- LEVEL 1 QUIZ LOGIC ---
+        function loadQuizQuestion() {
+            const q = quizData[currentQuizIndex];
+            document.getElementById("quizProgressText").innerText = `Soal ${currentQuizIndex + 1} dari ${quizData.length}`;
+            document.getElementById("quizProgressBar").style.width = `${((currentQuizIndex + 1) / quizData.length) * 100}%`;
+            document.getElementById("quizQuestion").innerText = q.question;
+
+            const optionsContainer = document.getElementById("quizOptions");
+            optionsContainer.innerHTML = "";
+
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement("button");
+                btn.className = "w-full text-left bg-jungle-950/80 hover:bg-jungle-800 border border-jungle-700/80 rounded-2xl p-4 transition-all flex items-center space-x-3 text-sm text-jungle-100 font-semibold";
+                btn.innerHTML = `
+                    <span class="w-7 h-7 rounded-lg bg-jungle-800 flex items-center justify-center font-bold text-xs shrink-0 text-amber-400">${String.fromCharCode(65 + idx)}</span>
+                    <span>${opt}</span>
+                `;
+                btn.onclick = () => selectQuizAnswer(idx);
+                optionsContainer.appendChild(btn);
+            });
+
+            document.getElementById("quizFeedback").classList.add("hidden");
+            document.getElementById("btnNextQuestion").classList.add("hidden");
+        }
+
+        function selectQuizAnswer(selectedIndex) {
+            const q = quizData[currentQuizIndex];
+            const feedbackEl = document.getElementById("quizFeedback");
+            const btnNext = document.getElementById("btnNextQuestion");
+
+            const optionBtns = document.getElementById("quizOptions").children;
+            for (let btn of optionBtns) {
+                btn.disabled = true;
+                btn.classList.add("opacity-60");
+            }
+
+            if (selectedIndex === q.answer) {
+                updateScore(10);
+                optionBtns[selectedIndex].classList.remove("opacity-60");
+                optionBtns[selectedIndex].classList.add("bg-emerald-900/80", "border-emerald-500", "text-emerald-200");
+                
+                feedbackEl.className = "mt-6 p-4 rounded-2xl border text-sm font-semibold bg-emerald-950/90 border-emerald-600 text-emerald-200";
+                feedbackEl.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400 mr-2"></i> <strong>ANALISIS BENAR!</strong> ${q.explanation}`;
+            } else {
+                optionBtns[selectedIndex].classList.remove("opacity-60");
+                optionBtns[selectedIndex].classList.add("bg-red-900/80", "border-red-500", "text-red-200");
+                optionBtns[q.answer].classList.remove("opacity-60");
+                optionBtns[q.answer].classList.add("bg-emerald-900/80", "border-emerald-500", "text-emerald-200");
+
+                feedbackEl.className = "mt-6 p-4 rounded-2xl border text-sm font-semibold bg-red-950/90 border-red-600 text-red-200";
+                feedbackEl.innerHTML = `<i class="fa-solid fa-circle-xmark text-red-400 mr-2"></i> <strong>ANALISIS TERJEBAK!</strong> ${q.explanation}`;
+            }
+
+            feedbackEl.classList.remove("hidden");
+            btnNext.classList.remove("hidden");
+        }
+
+        function nextQuestion() {
+            currentQuizIndex++;
+            if (currentQuizIndex < quizData.length) {
+                loadQuizQuestion();
+            } else {
+                showScreen("screenLevel2");
+            }
+        }
+
+        // --- LEVEL 2 CASES LOGIC ---
+        function renderCaseGrid() {
+            const grid = document.getElementById("caseGrid");
+            grid.innerHTML = "";
+
+            mysteryCases.forEach((c, idx) => {
+                const card = document.createElement("div");
+                card.className = "bg-jungle-900/80 hover:bg-jungle-800 border border-jungle-700/80 rounded-2xl p-4 cursor-pointer transition-all hover:scale-105 flex flex-col justify-between";
+                card.onclick = () => selectCase(c.id);
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20">Misteri #${idx + 1}</span>
+                            <i class="fa-solid ${c.icon} text-amber-400 text-lg"></i>
+                        </div>
+                        <h4 class="font-bold text-white text-base leading-snug mb-1">${c.title}</h4>
+                        <p class="text-xs text-jungle-300 line-clamp-2">${c.subtitle}</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-jungle-800/80 flex items-center justify-between text-xs text-emerald-400 font-bold">
+                        <span>Investigasi Case</span>
+                        <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function pickRandomCase() {
+            const randomIdx = Math.floor(Math.random() * mysteryCases.length);
+            selectCase(mysteryCases[randomIdx].id);
+        }
+
+        function selectCase(caseId) {
+            selectedCase = mysteryCases.find(c => c.id === caseId);
+            if (!selectedCase) return;
+
+            document.getElementById("activeCaseDetail").classList.remove("hidden");
+            document.getElementById("caseBadge").innerText = `MISTERI INVESTIGASI: ${selectedCase.id.toUpperCase()}`;
+            document.getElementById("caseTitle").innerText = selectedCase.title;
+            document.getElementById("caseSubtitle").innerText = selectedCase.subtitle;
+            document.getElementById("caseBiasRatio").innerText = selectedCase.biasRatioText;
+
+            // STATS BAR
+            document.getElementById("labelMajority").innerText = `Data Utama (${selectedCase.majorityPercent})`;
+            document.getElementById("labelMinority").innerText = `Data Hilang/Minoritas (${selectedCase.minorityPercent})`;
+            document.getElementById("barMajority").style.width = selectedCase.majorityPercent;
+            document.getElementById("barMinority").style.width = selectedCase.minorityPercent;
+
+            // REAL PHOTO DATASET GRID
+            const photoGrid = document.getElementById("datasetPhotoGrid");
+            photoGrid.innerHTML = "";
+            selectedCase.datasetItems.forEach(item => {
+                const pCard = document.createElement("div");
+                pCard.className = "bg-jungle-950 rounded-xl overflow-hidden border border-jungle-800 text-center text-[10px]";
+                pCard.innerHTML = `
+                    <div class="h-20 bg-jungle-900 overflow-hidden relative">
+                        <img src="${item.img}" alt="${item.name}" class="w-full h-full object-cover">
+                        <span class="absolute bottom-1 right-1 bg-black/70 text-amber-300 font-bold px-1.5 py-0.5 rounded text-[8px]">${item.tag}</span>
+                    </div>
+                    <div class="p-1.5 font-bold text-jungle-200 truncate">${item.name}</div>
+                `;
+                photoGrid.appendChild(pCard);
+            });
+
+            // RESET SIMULATION & DIAGNOSIS
+            document.getElementById("simulationCanvas").innerHTML = `<p class="text-sm text-jungle-400">Klik tombol "Jalankan Simulasi Uji Coba" untuk melihat reaksi AI pada situasi nyata.</p>`;
+            document.getElementById("failureDiagnosisBox").classList.add("hidden");
+
+            // SCROLL TO DETAIL
+            document.getElementById("activeCaseDetail").scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function runSimulation() {
+            if (!selectedCase) return;
+
+            const canvas = document.getElementById("simulationCanvas");
+            canvas.innerHTML = `
+                <div class="space-y-3">
+                    <div class="inline-block animate-spin text-amber-400 text-2xl"><i class="fa-solid fa-spinner"></i></div>
+                    <p class="text-xs font-bold text-jungle-300">Menjalankan Pengujian AI di Lapangan...</p>
+                </div>
+            `;
+
+            setTimeout(() => {
+                canvas.innerHTML = `
+                    <div class="space-y-2 text-left w-full">
+                        <div class="flex items-center space-x-2 text-red-400 font-bold text-sm">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span>SIMULASI UJI COBA: GAGAL & TERSIMULASI ERROR!</span>
+                        </div>
+                        <p class="text-xs text-jungle-200">Objek Baru Diuji: <strong>Situasi Nyata Lapangan Un-Biased</strong>.</p>
+                        <p class="text-xs text-red-300 bg-red-950/60 p-2.5 rounded-xl border border-red-800 font-bold">
+                            <strong>Respon AI:</strong> ${selectedCase.failureReasonDetail}
+                        </p>
+                    </div>
+                `;
+
+                // SHOW DIAGNOSIS BOX WITHOUT CAUSE REASON
+                const diagBox = document.getElementById("failureDiagnosisBox");
+                document.getElementById("failureReasonText").innerText = selectedCase.failureReasonDetail;
+                diagBox.classList.remove("hidden");
+
+            }, 1200);
+        }
+
+        function submitAuditReport() {
+            const ans1 = document.getElementById("auditAns1").value.trim();
+            const ans2 = document.getElementById("auditAns2").value.trim();
+            const ans3 = document.getElementById("auditAns3").value.trim();
+            const ans4 = document.getElementById("auditAns4").value.trim();
+
+            if (!ans1 || !ans2 || !ans3 || !ans4) {
+                alert("Harap isi keempat pertanyaan Laporan Audit Detektif terlebih dahulu!");
+                return;
+            }
+
+            updateScore(50);
+
+            document.getElementById("certStudentName").innerText = studentData.name;
+            document.getElementById("certStudentClass").innerText = studentData.class;
+            document.getElementById("certStudentAbsen").innerText = studentData.absen;
+
+            document.getElementById("certQuizScore").innerText = `${currentScore} Poin`;
+            
+            const certReport = document.getElementById("certReportDetails");
+            certReport.innerHTML = `
+                <p><strong>Kasus Dideteksi:</strong> ${selectedCase ? selectedCase.title : 'Kasus Audit AI'}</p>
+                <p><strong>1. Masalah Utama:</strong> ${ans1}</p>
+                <p><strong>2. Penyebab Bias Data:</strong> ${ans2}</p>
+                <p><strong>3. Dampak Fatal Dunia Nyata:</strong> ${ans3}</p>
+                <p><strong>4. Solusi Perbaikan Data:</strong> ${ans4}</p>
+            `;
+
+            showScreen("screenCertificate");
+        }
+    </script>
+</body>
+</html>
