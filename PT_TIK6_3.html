@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Penilaian Tugas TIK Kelas 6 - Keterbatasan AI & Data Bias</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <style>
+    :root {
+      --cbt-navy: #1e293b;
+      --cbt-blue: #1b365d;
+      --cbt-accent: #2563eb;
+      --cbt-bg: #f8fafc;
+      --font-scale: 1rem;
+    }
+
+    body {
+      background-color: var(--cbt-bg);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-size: var(--font-scale);
+      color: #334155;
+      user-select: none;
+    }
+
+    /* CBT Header */
+    .cbt-header {
+      background-color: var(--cbt-navy);
+      color: white;
+      padding: 12px 24px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .cbt-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    /* Top Utility Bar */
+    .utility-bar {
+      background-color: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 10px 24px;
+    }
+
+    .font-btn {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      font-weight: bold;
+      line-height: 1;
+    }
+
+    /* Main Container Card */
+    .cbt-card {
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      background-color: #ffffff;
+    }
+
+    .cbt-card-header {
+      background-color: #f1f5f9;
+      border-bottom: 1px solid #cbd5e1;
+      padding: 12px 20px;
+      font-weight: 600;
+    }
+
+    /* Question Navigator Drawer Grid */
+    .grid-drawer {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      max-height: 320px;
+      overflow-y: auto;
+    }
+
+    .nav-num-btn {
+      height: 38px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      background-color: #ffffff;
+      font-weight: 600;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .nav-num-btn.active {
+      border-color: #2563eb;
+      background-color: #dbeafe;
+      color: #1e40af;
+    }
+
+    .nav-num-btn.filled {
+      background-color: #2563eb;
+      color: white;
+      border-color: #2563eb;
+    }
+
+    .nav-num-btn.ragu {
+      background-color: #eab308;
+      color: white;
+      border-color: #ca8a04;
+    }
+
+    /* Options Item */
+    .opt-box {
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 12px 16px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      background-color: #ffffff;
+    }
+
+    .opt-box:hover {
+      border-color: #93c5fd;
+      background-color: #f8fafc;
+    }
+
+    .opt-box.selected {
+      border-color: #2563eb;
+      background-color: #eff6ff;
+    }
+
+    .case-box {
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      height: 100%;
+    }
+
+    .case-box:hover {
+      border-color: #3b82f6;
+      background-color: #f8fafc;
+    }
+
+    .case-box.selected {
+      border-color: #2563eb;
+      background-color: #eff6ff;
+    }
+
+    /* Game Canvas Container */
+    .game-container {
+      background: #0f172a;
+      border-radius: 12px;
+      padding: 15px;
+      text-align: center;
+    }
+
+    canvas {
+      background: #70c5ce;
+      border-radius: 8px;
+      max-width: 100%;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+
+<!-- CBT Top Navigation Header -->
+<div class="cbt-header d-flex justify-content-between align-items-center">
+  <div class="d-flex align-items-center gap-3">
+    <i class="bi bi-laptop fs-4"></i>
+    <div>
+      <div class="cbt-title">PENILAIAN TUGAS TIK KELAS 6</div>
+      <div style="font-size: 0.75rem; opacity: 0.8;">Pusat Pembelajaran Digital SD - Keterbatasan AI & Data Bias</div>
+    </div>
+  </div>
+  <div class="d-flex align-items-center gap-4">
+    <div class="text-end d-none d-md-block">
+      <div id="display-user-name" class="fw-bold" style="font-size: 0.85rem;">Peserta: Belum Login</div>
+      <div id="display-user-kelas" style="font-size: 0.75rem; opacity: 0.8;">Status: Sesi Penilaian</div>
+    </div>
+    <div class="bg-dark px-3 py-1 rounded border border-secondary text-warning fw-bold font-monospace" style="font-size: 1.1rem;" id="cbt-timer">
+      00:60:00
+    </div>
+  </div>
+</div>
+
+<!-- CBT Utility Bar -->
+<div class="utility-bar d-flex justify-content-between align-items-center">
+  <div class="d-flex align-items-center gap-2">
+    <span class="small text-muted fw-bold">Ukuran Font:</span>
+    <button class="btn btn-outline-secondary btn-sm font-btn" onclick="setFontSize('0.875rem')">A-</button>
+    <button class="btn btn-outline-secondary btn-sm font-btn" onclick="setFontSize('1rem')">A</button>
+    <button class="btn btn-outline-secondary btn-sm font-btn" onclick="setFontSize('1.125rem')">A+</button>
+  </div>
+  <div>
+    <button class="btn btn-primary btn-sm fw-bold d-none" id="btn-toggle-grid" data-bs-toggle="modal" data-bs-target="#gridModal">
+      <i class="bi bi-grid-3x3-gap-fill me-1"></i> Daftar Soal
+    </button>
+  </div>
+</div>
+
+<!-- Main Content Area -->
+<div class="container my-4" style="max-width: 960px;">
+  
+  <!-- SESI 1: LOGIN & IDENTITAS -->
+  <div id="session-1" class="cbt-card">
+    <div class="cbt-card-header text-primary">
+      <i class="bi bi-person-check me-2"></i>Konfirmasi Data Peserta Penilaian Tugas
+    </div>
+    <div class="p-4">
+      <div class="alert alert-secondary border-0 mb-4" style="font-size: 0.9rem;">
+        <h6 class="fw-bold mb-1"><i class="bi bi-info-circle me-1"></i>Petunjuk Penilaian Tugas:</h6>
+        <ul class="mb-0 ps-3">
+          <li>Penilaian terdiri dari <strong>20 Soal Pilihan Ganda</strong>, <strong>10 Soal Benar/Salah</strong>, dan <strong>5 Soal Esai Kasus</strong>.</li>
+          <li>Soal Pilihan Ganda & Benar/Salah bernilai total <strong>75 Poin</strong> (2.5 Poin/soal) dan diperiksa otomatis.</li>
+          <li>Soal Esai bernilai total <strong>25 Poin</strong> (5 Poin/soal) dan diperiksa secara manual oleh guru.</li>
+          <li>Pilihlah 1 dari 10 Kasus Investigasi Esai pada Sesi 3.</li>
+        </ul>
+      </div>
+
+      <form id="form-identity">
+        <div class="mb-3">
+          <label class="form-label fw-bold small text-muted">NAMA LENGKAP SISWA</label>
+          <input type="text" id="student-nama" class="form-control" placeholder="Tuliskan nama lengkap kamu..." required>
+        </div>
+
+        <div class="row g-3 mb-4">
+          <div class="col-md-4">
+            <label class="form-label fw-bold small text-muted">KELAS</label>
+            <select id="student-kelas" class="form-select" required>
+              <option value="">-- Pilih Kelas --</option>
+              <option value="6A">Kelas 6 A</option>
+              <option value="6B">Kelas 6 B</option>
+              <option value="6C">Kelas 6 C</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-bold small text-muted">NOMOR ABSEN</label>
+            <input type="number" id="student-absen" class="form-control" placeholder="1-40" min="1" max="50" required>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-bold small text-muted">TOKEN PENILAIAN</label>
+            <input type="text" id="student-token" class="form-control font-monospace text-uppercase" value="DETEKTIF-AI" readonly>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-primary w-100 py-2 fw-bold" onclick="startExam()">
+          Mulai Mengerjakan Penilaian Tugas <i class="bi bi-arrow-right ms-1"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- SESI 2: SOAL PG & TF (Satu per Satu) -->
+  <div id="session-2" class="cbt-card d-none">
+    <div class="cbt-card-header d-flex justify-content-between align-items-center">
+      <span id="q-header-title" class="text-primary">Soal Nomor 1</span>
+      <span class="badge bg-secondary font-monospace" id="q-progress-text">1 / 30</span>
+    </div>
+
+    <div class="p-4">
+      <!-- Pertanyaan -->
+      <p class="fw-semibold mb-4" id="q-text" style="font-size: 1.05rem; line-height: 1.6;"></p>
+      
+      <!-- Opsi Jawaban -->
+      <div id="q-options" class="mb-4"></div>
+
+      <!-- Footer Action Navigasi -->
+      <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+        <button type="button" id="btn-prev-q" class="btn btn-outline-secondary fw-bold px-3" onclick="prevQuestion()">
+          <i class="bi bi-chevron-left"></i> SEBELUMNYA
+        </button>
+
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="chk-ragu" onchange="toggleRagu()">
+          <label class="form-check-label fw-bold text-warning-emphasis small" for="chk-ragu">
+            <i class="bi bi-flag-fill me-1 text-warning"></i> RAGU-RAGU
+          </label>
+        </div>
+
+        <button type="button" id="btn-next-q" class="btn btn-primary fw-bold px-4" onclick="nextQuestion()">
+          BERIKUTNYA <i class="bi bi-chevron-right"></i>
+        </button>
+        <button type="button" id="btn-finish-objective" class="btn btn-success fw-bold px-4 d-none" onclick="goToCaseSelection()">
+          SOAL ESAI <i class="bi bi-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SESI 3: PEMILIHAN KASUS INVESTIGASI -->
+  <div id="session-3" class="cbt-card d-none">
+    <div class="cbt-card-header text-primary">
+      <i class="bi bi-search me-2"></i>Pilih 1 Kasus Investigasi Esai
+    </div>
+    <div class="p-4">
+      <p class="text-muted small mb-3">Pilihlah salah satu kasus misteri di bawah ini untuk kamu analisis pada 5 nomor soal esai:</p>
+      
+      <div class="row g-3" id="case-options-container"></div>
+
+      <button type="button" id="btn-confirm-case" class="btn btn-primary w-100 py-2 fw-bold mt-4 disabled" onclick="confirmCaseSelection()" disabled>
+        Lanjut Mengerjakan Esai Kasus Terpilih <i class="bi bi-arrow-right ms-1"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- SESI 4: ESAI ANALISIS KASUS -->
+  <div id="session-4" class="cbt-card d-none">
+    <div class="cbt-card-header text-primary" id="essay-case-title">
+      Investigasi Kasus
+    </div>
+    <div class="p-4">
+      <!-- Gallery Sample Data (Tanpa Menyebut Data Bias) -->
+      <div class="mb-4">
+        <h6 class="fw-bold small text-muted mb-2"><i class="bi bi-images me-1"></i>SAMPEL DATA LATIHAN AI YANG DIGUNAKAN (12 FOTO REAL):</h6>
+        <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-2" id="essay-data-gallery"></div>
+      </div>
+
+      <!-- Simulation Terminal -->
+      <div class="card bg-dark text-white border-0 mb-4">
+        <div class="card-header bg-black d-flex justify-content-between align-items-center py-2">
+          <span class="font-monospace small"><i class="bi bi-terminal-fill me-2 text-success"></i>AI TESTBED SIMULATOR</span>
+          <button type="button" class="btn btn-outline-light btn-sm font-monospace" style="font-size: 0.75rem;" onclick="runSimulation()">▶ JALANKAN TESTBED</button>
+        </div>
+        <div class="card-body font-monospace small" id="simulation-output" style="display: none; background: #0f172a; border-left: 4px solid #ef4444;"></div>
+      </div>
+
+      <!-- 5 Questions -->
+      <form id="form-essay">
+        <div id="essay-questions-list"></div>
+
+        <button type="button" class="btn btn-success w-100 py-3 fw-bold mt-4" onclick="submitExam()">
+          <i class="bi bi-send-check me-2"></i>Kirim Seluruh Jawaban Penilaian Tugas
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- SESI 5: HASIL SKOR, REKAPAN & MINI GAMES FLAPPY / DINO -->
+  <div id="session-5" class="cbt-card d-none">
+    <div class="cbt-card-header bg-success text-white">
+      <i class="bi bi-check-circle-fill me-2"></i>Penilaian Tugas Selesai
+    </div>
+    <div class="p-4">
+      
+      <!-- Box Hasil Nilai Utama -->
+      <div class="text-center p-4 bg-light border rounded-3 mb-4">
+        <h4 class="fw-bold text-dark mb-1">Terima Kasih Sudah Mengerjakan!</h4>
+        <p class="text-muted small mb-3">Jawaban kamu telah berhasil dikirimkan ke spreadsheet sistem guru.</p>
+
+        <div class="d-inline-block bg-white p-3 rounded border text-start shadow-sm" style="min-width: 280px;">
+          <div class="small text-muted fw-bold mb-1" id="summary-student-name"></div>
+          <div class="display-6 fw-bold text-success mb-1" id="summary-score-pg">0 / 75</div>
+          <div class="badge bg-primary-subtle text-primary border border-primary-subtle p-2 w-100 text-wrap text-start">
+            <i class="bi bi-info-circle me-1"></i> Skor di atas adalah nilai sementara PG & True/False (75 Poin). <strong>5 Soal Esai (25 Poin) akan diperiksa manual oleh guru.</strong>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <button class="btn btn-outline-primary fw-bold px-4" data-bs-toggle="collapse" data-bs-target="#previewCollapse">
+            <i class="bi bi-eye-fill me-1"></i> Lihat Preview & Rekapan Jawaban
+          </button>
+        </div>
+      </div>
+
+      <!-- Collapsible Preview & Rekapan Jawaban -->
+      <div class="collapse mb-4" id="previewCollapse">
+        <div class="card card-body border">
+          <h6 class="fw-bold text-primary mb-3"><i class="bi bi-list-check me-1"></i>Rekapan Jawaban PG & True/False (30 Nomor)</h6>
+          <div class="table-responsive mb-4" style="max-height: 300px;">
+            <table class="table table-sm table-hover align-middle">
+              <thead class="table-dark sticky-top" style="font-size: 0.85rem;">
+                <tr>
+                  <th>No</th>
+                  <th>Pertanyaan Soal</th>
+                  <th>Jawaban Kamu</th>
+                  <th>Kunci</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="review-pg-table-body" style="font-size: 0.85rem;"></tbody>
+            </table>
+          </div>
+
+          <h6 class="fw-bold text-primary mb-3"><i class="bi bi-file-earmark-text me-1"></i>Preview Jawaban Esai Siswa</h6>
+          <div id="review-essay-container" class="bg-light p-3 rounded" style="font-size: 0.85rem;"></div>
+        </div>
+      </div>
+
+      <!-- SECTION MINI GAMES CANVAS (FLAPPY BIRD & DINO JUMP) -->
+      <div class="mt-4 pt-3 border-top">
+        <h5 class="fw-bold text-primary mb-2"><i class="bi bi-controller me-2"></i>Area Mini Game Edukatif (Selesai Lebih Awal)</h5>
+        <p class="text-muted small mb-3">Sambil menunggu teman lainnya selesai, kamu bisa mencoba 2 game seru ini:</p>
+
+        <ul class="nav nav-tabs" id="gameTabs" role="tablist">
+          <li class="nav-item">
+            <button class="nav-link active fw-bold" id="flappy-tab" data-bs-toggle="tab" data-bs-target="#flappy-game" type="button" onclick="initFlappy()">Game 1: Flappy Bird AI</button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link fw-bold" id="dino-tab" data-bs-toggle="tab" data-bs-target="#dino-game" type="button" onclick="initDino()">Game 2: Loncat Rintangan AI</button>
+          </li>
+        </ul>
+
+        <div class="tab-content p-3 border border-top-0 rounded-bottom bg-white" id="gameTabsContent">
+          <!-- GAME 1: FLAPPY BIRD -->
+          <div class="tab-pane fade show active" id="flappy-game">
+            <div class="game-container">
+              <canvas id="flappyCanvas" width="400" height="400"></canvas>
+              <div class="mt-3">
+                <button class="btn btn-warning fw-bold px-4 me-2" onclick="flappyJump()">LOMPAT (Spasi / Klik)</button>
+                <button class="btn btn-outline-light fw-bold" onclick="initFlappy()">Mulai Ulang</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- GAME 2: LONCAT RINTANGAN (DINO) -->
+          <div class="tab-pane fade" id="dino-game">
+            <div class="game-container">
+              <canvas id="dinoCanvas" width="600" height="250" style="background: #1e293b;"></canvas>
+              <div class="mt-3">
+                <button class="btn btn-success fw-bold px-4 me-2" onclick="dinoJump()">LOMPAT (Spasi / Klik)</button>
+                <button class="btn btn-outline-light fw-bold" onclick="initDino()">Mulai Ulang</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal Drawer Grid Daftar Soal -->
+<div class="modal fade" id="gridModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header py-2">
+        <h6 class="modal-title fw-bold"><i class="bi bi-grid-3x3-gap-fill me-2"></i>Daftar Soal Penilaian</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="grid-drawer" id="modal-grid-drawer"></div>
+        
+        <div class="d-flex justify-content-around mt-3 pt-2 border-top small fw-bold">
+          <span><span class="badge bg-primary"> </span> Sudah Dijawab</span>
+          <span><span class="badge bg-warning"> </span> Ragu-ragu</span>
+          <span><span class="badge bg-light text-dark border"> </span> Belum Diisi</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap 5 JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  // ==========================================
+  // HARDCODED WEB APP URL GOOGLE APPS SCRIPT
+  // ==========================================
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxoon1zPDQFv-i7audvAOM_RuTZrIvVjojeOPjZQ0MlIr8wdWgyiBAHWHzB6T4fS3ud/exec";
+
+  // State Application
+  let currentStep = 1;
+  let currentQuestionIndex = 0;
+  let studentData = { nama: '', kelas: '', noAbsen: '' };
+  let studentObjectiveAnswers = {}; 
+  let raguAnswers = {}; 
+  let selectedCaseIndex = null;
+  let essayAnswers = {};
+
+  // BANK SOAL PG (20 Nomor) & True/False (10 Nomor)
+  const objectiveQuestions = [
+    {
+      q: "1. Sebuah AI pemilah buah dilatih dengan 500 foto apel merah mulus. Saat diberi foto apel merah yang memiliki sedikit noda hitam, AI menebaknya sebagai 'Batu'. Mengapa AI sampai salah menebak benda tersebut?",
+      options: [
+        "A. Karena AI mendeteksi noda hitam sebagai ciri benda mati, bukan ciri khas buah apel",
+        "B. Karena data latihan AI tidak mencakup variasi tekstur dan cacat fisik pada buah apel",
+        "C. Karena algoritma AI tidak mampu mengenali warna merah jika tertutup oleh warna lain",
+        "D. Karena foto sampel yang dimasukkan ke dalam sistem AI memiliki kualitas resolusi yang rendah"
+      ],
+      key: "B"
+    },
+    {
+      q: "2. Pernyataan manakah yang paling akurat dalam menggambarkan prinsip GIGO (Garbage In, Garbage Out) pada sistem AI?",
+      options: [
+        "A. Jika data yang dimasukkan salah, AI akan otomatis mendeteksi dan menghapus data tersebut",
+        "B. Jika data latihan berkualitas buruk, AI akan menghasilkan keputusan atau prediksi yang salah",
+        "C. AI akan mengalami kerusakan sistem jika menerima data yang tidak sesuai dengan instruksi",
+        "D. Hasil keluaran AI bergantung pada seberapa cepat sistem dalam membersihkan data yang rusak"
+      ],
+      key: "B"
+    },
+    {
+      q: "3. Pernyataan berikut yang menunjukkan perbedaan mendasar antara cara berpikir manusia dan AI adalah...",
+      options: [
+        "A. Manusia berpikir menggunakan akal sehat, sedangkan AI memproses keputusan berdasarkan pola data",
+        "B. Manusia mengingat seluruh data secara sempurna, sedangkan AI hanya mampu menyimpan data sementara",
+        "C. AI dapat mengambil keputusan sendiri tanpa data, sedangkan manusia selalu membutuhkan contoh data",
+        "D. AI memiliki pemikiran yang konsisten, sedangkan manusia selalu membuat keputusan yang salah"
+      ],
+      key: "A"
+    },
+    {
+      q: "4. Dalam simulasi AI for Oceans, siswa melatih AI membedakan ikan dan sampah hanya dengan sampel ikan berwarna merah. Apa yang terjadi ketika AI diuji pada perairan yang penuh ikan kuning?",
+      options: [
+        "A. AI menganggap ikan kuning sebagai objek baru dan otomatis menambahkannya ke data latihan",
+        "B. AI mengabaikan warna kuning dan tetap mengenali bentuk fisik ikan dengan sangat tepat",
+        "C. AI gagal mengenali ikan kuning sebagai ikan dan membuangnya ke tempat sampah",
+        "D. AI akan menghentikan proses pembersihan laut karena sistem mengalami kegagalan fungsi"
+      ],
+      key: "C"
+    },
+    {
+      q: "5. Sebuah mobil otonom gagal mengerem saat ada penyeberang jalan berpayung di malam hari karena data latihannya hanya pejalan kaki siang hari. Kasus ini membuktikan bahwa...",
+      options: [
+        "A. Sistem sensor mobil otonom belum cukup canggih untuk digunakan pada malam hari",
+        "B. Data bias pada latihan AI dapat menyebabkan kegagalan prediksi yang berakibat fatal",
+        "C. Pejalan kaki yang menggunakan payung di malam hari sulit terdeteksi oleh kamera apa pun",
+        "D. AI mobil secara otomatis memilih mengutamakan keselamatan penumpang daripada pejalan kaki"
+      ],
+      key: "B"
+    },
+    {
+      q: "6. Seorang pengembang ingin membuat AI pemindai wajah yang adil dan tidak bias. Langkah manakah yang paling tepat untuk dilakukan?",
+      options: [
+        "A. Menggunakan sampel data wajah yang sedikit namun berasal dari orang-orang terdekat",
+        "B. Mengumpulkan data latihan yang bervariasi, seimbang, dan mewakili berbagai kelompok",
+        "C. Membiarkan AI mencari sendiri sampel foto wajah secara otomatis dari berbagai situs internet",
+        "D. Mengeliminasi semua foto wajah yang memiliki ciri unik agar AI tidak bingung saat belajar"
+      ],
+      key: "B"
+    },
+    {
+      q: "7. Pada eksperimen Teachable Machine, AI berhasil menebak tangan siswa tetapi gagal total saat menebak tangan guru. Penyebab utama kegagalan AI tersebut adalah...",
+      options: [
+        "A. AI mengalami data bias karena sampel latihan hanya berisi foto tangan anak-anak",
+        "B. Tangan guru memiliki bentuk dan ukuran fisik yang tidak dapat ditangkap oleh kamera",
+        "C. Sistem AI tidak dapat merespons masukan data yang diberikan oleh pengguna dewasa",
+        "D. Kamera laptop tidak mampu memproses perbedaan warna kulit antara guru dan siswa"
+      ],
+      key: "A"
+    },
+    {
+      q: "8. Manakah dari pernyataan berikut yang merupakan konsep SALAH mengenai karakteristik kecerdasan buatan (AI)?",
+      options: [
+        "A. AI sangat bergantung pada kualitas dan variasi data latihan yang diberikan manusia",
+        "B. AI memiliki kemampuan akal sehat alami untuk membedakan hal yang benar dan salah",
+        "C. AI dapat menghasilkan prediksi yang keliru jika diuji pada situasi yang belum pernah dipelajari",
+        "D. AI bekerja dengan cara mencari pola dari sekumpulan data latihan yang telah dimasukkan"
+      ],
+      key: "B"
+    },
+    {
+      q: "9. Mengapa sistem AI pemindai penyakit medis tidak diperbolehkan menggantikan keputusan dokter secara mandiri?",
+      options: [
+        "A. Karena AI dapat membuat diagnosis salah jika kondisi pasien tidak sesuai data latihannya",
+        "B. Karena AI belum memiliki izin resmi dari lembaga kesehatan untuk mengobati pasien",
+        "C. Karena dokter ahli memiliki kemampuan komputasi data yang lebih cepat dibandingkan AI",
+        "D. Karena sistem AI selalu membutuhkan biaya operasional yang lebih besar daripada dokter"
+      ],
+      key: "A"
+    },
+    {
+      q: "10. Ketika sebuah AI rekrutmen kerja melakukan tindakan diskriminasi terhadap pelamar tertentu, pihak manakah yang paling bertanggung jawab?",
+      options: [
+        "A. Program AI itu sendiri karena telah membuat keputusan penolakan secara otomatis",
+        "B. Pelamar kerja yang tidak menyesuaikan isi berkasnya dengan kriteria algoritma AI",
+        "C. Manusia penyusun data latihan yang memasukkan data histori bertendensi memihak",
+        "D. Perusahaan pembuat perangkat komputer yang menjalankan sistem rekrutmen tersebut"
+      ],
+      key: "C"
+    },
+    {
+      q: "11. Manakah definisi yang paling tepat untuk menggambarkan fenomena Data Bias pada AI?",
+      options: [
+        "A. Kondisi ketika data latihan yang digunakan berjumlah sangat besar sehingga AI menjadi lambat",
+        "B. Kondisi ketika data latihan yang dimasukkan tertukar dengan data milik sistem aplikasi lain",
+        "C. Kondisi ketika data latihan yang diberikan tidak seimbang, tidak lengkap, atau memihak",
+        "D. Kondisi ketika data latihan AI sengaja disembunyikan agar tidak bisa diakses oleh publik"
+      ],
+      key: "C"
+    },
+    {
+      q: "12. Dalam game AI for Oceans Level 5, jika siswa memberikan sampel data yang bias saat mengajari AI memilah objek laut, dampak langsungnya adalah...",
+      options: [
+        "A. Sistem game akan langsung menyatakan bahwa siswa gagal dan mengulang dari Level 1",
+        "B. Biota laut yang memiliki bentuk atau warna tidak biasa akan terbuang sebagai sampah",
+        "C. Robot AI akan otomatis berhenti bekerja sampai siswa memperbaiki kode programnya",
+        "D. Seluruh sampah plastik di dalam laut akan dikategorikan secara benar sebagai ikan"
+      ],
+      key: "B"
+    },
+    {
+      q: "13. Sebuah AI dikatakan telah berhasil menemukan pola sejati (true pattern) dari suatu objek apabila...",
+      options: [
+        "A. AI mampu mengenali objek baru berdasarkan fitur umumnya, bukan ciri spesifik yang memihak",
+        "B. AI dapat mengingat seluruh sampel foto latihan dengan tingkat kemiripan mencapai 100%",
+        "C. AI memprediksi keberadaan objek berdasarkan kesamaan warna latar belakang pada gambar",
+        "D. AI berhasil menebak objek karena sampel data yang diberikan berjumlah jutaan foto"
+      ],
+      key: "A"
+    },
+    {
+      q: "14. Sebuah AI penyaring pesan dilatih hanya dengan kata baku bahasa Indonesia. Saat ada warga mengirim pesan berisi pujian dalam bahasa daerah, AI justru memblokir pesan tersebut. Mengapa hal ini terjadi?",
+      options: [
+        "A. AI secara otomatis menganggap semua bahasa yang tidak dikenali sebagai kata berbahaya",
+        "B. AI mengalami bias data teks sehingga gagal memahami arti kata di luar data latihannya",
+        "C. AI sengaja memblokir pesan tersebut karena mengandung susunan tata bahasa yang salah",
+        "D. Sistem pemroses teks pada AI tidak mampu membaca kombinasi huruf pada bahasa daerah"
+      ],
+      key: "B"
+    },
+    {
+      q: "15. Mengapa data kejadian bencana yang jarang terjadi (rare events) sangat krusial untuk dimasukkan ke dalam data latihan AI prediksi cuaca?",
+      options: [
+        "A. Agar memori penyimpanan pada sistem AI dapat terisi secara maksimal dan tidak kosong",
+        "B. Agar sistem AI dapat memprediksi perubahan cuaca secara acak dalam waktu yang singkat",
+        "C. Karena data cuaca harian yang normal tidak memberikan dampak apa pun bagi sistem AI",
+        "D. Agar AI peka dan mampu mendeteksi potensi bencana alam ekstrem yang sifatnya langka"
+      ],
+      key: "D"
+    },
+    {
+      q: "16. Robot kasir di toko swalayan mengunci pintu keluar karena menganggap pembeli membawa barang curian, padahal barang tersebut adalah produk kemasan baru. Mengapa AI kasir bisa keliru?",
+      options: [
+        "A. Karena data latihan AI belum diperbarui dengan sampel bentuk dan foto kemasan baru",
+        "B. Karena sistem AI kasir mendeteksi setiap barang baru sebagai produk tanpa izin edar",
+        "C. Karena sensor kamera pada robot kasir terhalang oleh posisi tangan pembeli saat memindai",
+        "D. Karena harga produk kemasan baru tersebut belum diinput ke dalam database toko"
+      ],
+      key: "A"
+    },
+    {
+      q: "17. Berdasarkan konsep Garbage In, Garbage Out, manakah faktor utama yang paling menentukan keakuratan hasil prediksi AI?",
+      options: [
+        "A. Kualitas, kecukupan, dan keberagaman masukan data latihan yang diberikan ke AI",
+        "B. Kecepatan dan kapasitas memori dari komputer yang digunakan untuk melatih AI",
+        "C. Jenis algoritma dan bahasa pemrograman yang dipilih oleh perancang sistem AI",
+        "D. Banyaknya jumlah pengguna yang mengakses sistem AI tersebut secara bersamaan"
+      ],
+      key: "D"
+    },
+    {
+      q: "18. AI pada kamera keamanan malam hari sering salah membedakan antara bayangan pohon dan manusia. Penyebab utama kegagalan visual AI ini adalah...",
+      options: [
+        "A. AI tidak dilatih dengan data kontras cahaya rendah serta tekstur objek pada malam hari",
+        "B. Sensor kamera keamanan secara otomatis mengalami penurunan ketajaman saat malam hari",
+        "C. AI menganggap seluruh objek yang bergerak lambat di malam hari sebagai bayangan",
+        "D. Memori pemrosesan gambar pada AI terisi penuh akibat rekaman video yang terlalu panjang"
+      ],
+      key: "A"
+    },
+    {
+      q: "19. Istilah false positive pada AI pengenal wajah kepolisian terjadi ketika...",
+      options: [
+        "A. AI berhasil mendeteksi dan mengidentifikasi wajah pelaku kejahatan dengan sangat tepat",
+        "B. AI salah mengidentifikasi warga biasa yang tidak bersalah sebagai pelaku kejahatan",
+        "C. AI gagal menemukan wajah siapa pun saat memindai area kerumunan warga di jalan raya",
+        "D. AI mengalami kegagalan sistem sehingga kamera pengawas tidak dapat merekam gambar"
+      ],
+      key: "B"
+    },
+    {
+      q: "20. Tujuan utama siswa kelas 6 mempelajari materi keterbatasan AI dan data bias dalam pelajaran TIK adalah agar...",
+      options: [
+        "A. Siswa dapat membuat program aplikasi AI sendiri tanpa bantuan komputer atau data",
+        "B. Siswa tidak lagi mempercayai seluruh bentuk teknologi digital di kehidupan sehari-hari",
+        "C. Siswa mampu bersikap kritis, adil, dan bertanggung jawab saat melatih serta menggunakan AI",
+        "D. Siswa dapat memperbaiki kerusakan perangkat keras pada sistem komputer yang bias"
+      ],
+      key: "B"
+    },
+    {
+      q: "21. (Benar/Salah) AI memiliki akal sehat alami sehingga dapat mengambil keputusan yang benar meskipun data latihannya buruk.",
+      options: ["BENAR", "SALAH"],
+      key: "SALAH"
+    },
+    {
+      q: "22. (Benar/Salah) Prinsip GIGO berarti jika data masukan berkualitas baik, hasil keluaran AI juga akan berkualitas baik.",
+      options: ["BENAR", "SALAH"],
+      key: "BENAR"
+    },
+    {
+      q: "23. (Benar/Salah) Data Bias terjadi ketika sampel data yang digunakan untuk melatih AI mencakup seluruh kondisi di dunia nyata secara seimbang.",
+      options: ["BENAR", "SALAH"],
+      key: "SALAH"
+    },
+    {
+      q: "24. (Benar/Salah) AI yang dilatih hanya dengan foto orang tanpa kacamata akan mengalami penurunan akurasi saat mendeteksi orang yang berkacamata.",
+      options: ["BENAR", "SALAH"],
+      key: "BENAR"
+    },
+    {
+      q: "25. (Benar/Salah) Kesalahan prediksi AI pada mobil tanpa pengemudi hanya berdampak pada keterlambatan waktu dan tidak berbahaya bagi manusia.",
+      options: ["BENAR", "SALAH"],
+      key: "SALAH"
+    },
+    {
+      q: "26. (Benar/Salah) Mengabaikan kelompok minoritas dalam data latihan AI dapat menyebabkan sistem AI bertindak diskriminatif.",
+      options: ["BENAR", "SALAH"],
+      key: "BENAR"
+    },
+    {
+      q: "27. (Benar/Salah) Pada game AI for Oceans, AI akan secara otomatis mengenali sampah plastik tanpa perlu contoh data dari manusia.",
+      options: ["BENAR", "SALAH"],
+      key: "SALAH"
+    },
+    {
+      q: "28. (Benar/Salah) Menambahkan variasi kondisi cuaca dan pencahayaan pada data latihan dapat meningkatkan ketahanan sistem AI.",
+      options: ["BENAR", "SALAH"],
+      key: "BENAR"
+    },
+    {
+      q: "29. (Benar/Salah) Jika AI membuat kesalahan di dunia nyata, maka mesin AI tersebut harus dihukum secara hukum.",
+      options: ["BENAR", "SALAH"],
+      key: "SALAH"
+    },
+    {
+      q: "30. (Benar/Salah) Keberhasilan model AI sangat ditentukan oleh kemampuan manusia dalam menyediakan data latihan yang adil dan berkualitas.",
+      options: ["BENAR", "SALAH"],
+      key: "BENAR"
+    }
+  ];
+
+  // DATA 10 KASUS ESAI (Visual Sampel Tanpa Menyebut Bias)
+  const caseStudies = [
+    {
+      title: "Misteri #1: AI Navigator Kapal & Terumbu Karang",
+      desc: "Investigasi kegagalan navigasi otomatis kapal kargo saat melintasi perairan dangkal.",
+      samples: Array(12).fill({ label: "Laut Biru Dalam (>100m)" }),
+      errorSim: "FATAL ERROR: AI mengidentifikasi Area Terumbu Karang Langka yang Dangkal sebagai 'LAUT DALAM AMAN' dan mengarahkan kapal hingga menghancurkan terumbu karang!",
+      questions: [
+        "1. [Diagnosis] Objek alam apa yang gagal dikenali oleh AI navigasi dan apa akibatnya?",
+        "2. [Analisis Data] Amatilah 12 sampel data latihan di atas. Apa yang dominan dan apa yang hilang?",
+        "3. [Dampak Fatal] Mengapa kerusakan terumbu karang ini berdampak buruk bagi nelayan & laut?",
+        "4. [Prinsip GIGO] Bagaimana kasus ini membuktikan bahwa AI tidak punya akal sehat?",
+        "5. [Solusi Data] Sebutkan 3 variasi sampel data baru yang wajib ditambahkan!"
+      ]
+    },
+    {
+      title: "Misteri #2: AI Penyaring Panggilan Darurat 112",
+      desc: "Investigasi pemutusan panggil darurat otomatis saat anak SD melaporkan kebakaran.",
+      samples: Array(12).fill({ label: "Audio Suara Dewasa Tenang" }),
+      errorSim: "FATAL ERROR: AI mengategorikan Panggilan Laporan Kebakaran dari Anak SD yang Panik sebagai 'SUARA MAIN-MAIN / SPAM' lalu mematikan sambungan!",
+      questions: [
+        "1. [Diagnosis] Kejadian darurat apa yang gagal ditangani oleh AI penyaring 112?",
+        "2. [Analisis Data] Mengapa AI menyimpulkan suara anak panik sebagai 'spam'?",
+        "3. [Dampak Fatal] Apa bahaya keselamatan jika pemadam kebakaran terlambat datang?",
+        "4. [Keterbatasan] Mengapa AI sulit mengenali emosi dan nada suara anak-anak?",
+        "5. [Solusi Data] Data suara seperti apa yang harus ditambahkan ke sistem AI?"
+      ]
+    },
+    {
+      title: "Misteri #3: AI Pemindai Kualitas Helm Keselamatan",
+      desc: "Investigasi penguncian pintu gerbang proyek terhadap pekerja berhelm merah.",
+      samples: Array(12).fill({ label: "Foto Helm Kuning Mulus" }),
+      errorSim: "FATAL ERROR: AI menandai Helm Merah Standar K3 milik pekerja sebagai 'TIDAK MEMAKAI HELM (PELANGGARAN)' dan mengunci akses pintu masuk!",
+      questions: [
+        "1. [Diagnosis] Kelalaian apa yang dilakukan AI pemindai keselamatan proyek?",
+        "2. [Analisis Data] Mengapa AI menganggap helm merah sebagai bentuk pelanggaran?",
+        "3. [Dampak Fatal] Apa kerugian pekerja jika pintu proyek terus terkunci keliru?",
+        "4. [Pola Sejati] Mengapa AI terkecoh warna dan gagal memahami bentuk fisik helm?",
+        "5. [Solusi Data] Kriteria data foto helm seperti apa yang lengkap & seimbang?"
+      ]
+    },
+    {
+      title: "Misteri #4: AI Detektor Kebocoran Pipa Gas Industri",
+      desc: "Investigasi kebocoran gas beracun pada jaringan pipa stainless steel baru.",
+      samples: Array(12).fill({ label: "Foto Pipa Tua Berkarat" }),
+      errorSim: "FATAL ERROR: AI mendeteksi Kebocoran Gas Berbahaya pada Pipa Stainless Steel Baru sebagai 'KONDISI AMAN' karena pipa terlihat bersih tanpa karat!",
+      questions: [
+        "1. [Diagnosis] Kesalahan deteksi pabrik apa yang terjadi pada sistem AI gas?",
+        "2. [Analisis Data] Mengapa AI menyimpulkan pipa bocor tersebut berada dalam kondisi aman?",
+        "3. [Dampak Fatal] Bahaya fisik apa yang mengancam keselamatan pekerja pabrik?",
+        "4. [Keterbatasan Logika] Mengapa AI mengaitkan bocor hanya dengan tekstur karat?",
+        "5. [Solusi Data] Rekayasa data sensor apa yang harus ditambahkan ke AI?"
+      ]
+    },
+    {
+      title: "Misteri #5: AI Penyortir Obat Apotek Otomatis",
+      desc: "Investigasi salah pilah antibiotik kapsul ke dalam botol obat penenang.",
+      samples: Array(12).fill({ label: "Foto Tablet Putih Lingkar" }),
+      errorSim: "FATAL ERROR: AI memasukkan Kapsul Antibiotik Merah-Kuning ke botol 'OBAT PENENANG DOSIS TINGGI' karena menganggap kapsul berwarna adalah racun!",
+      questions: [
+        "1. [Diagnosis] Kesalahan pemilahan obat apa yang dilakukan robot apotek?",
+        "2. [Analisis Data] Mengapa AI mengategorikan kapsul antibiotik ke obat penenang?",
+        "3. [Dampak Fatal] Apa bahaya kesehatan paling mematikan bagi pasien penerima obat?",
+        "4. [Zero Tolerance] Mengapa dalam bidang medis AI tidak boleh membuat kesalahan?",
+        "5. [Solusi Data] Susunlah sampel data bentuk/warna obat yang wajib dilatihkan!"
+      ]
+    },
+    {
+      title: "Misteri #6: AI Penilai Kualitas Air Minum Desa",
+      desc: "Investigasi pembuangan ratusan liter air mineral sehat pegunungan.",
+      samples: Array(12).fill({ label: "Air Suling Bening Lab" }),
+      errorSim: "FATAL ERROR: AI membuang Ratusan Liter Air Mineral Sehat Pegunungan dan mengategorikannya sebagai 'AIR BERACUN' hanya karena agak kekuningan!",
+      questions: [
+        "1. [Diagnosis] Sumber daya air sehat apa yang keliru dibuang oleh AI?",
+        "2. [Analisis Data] Mengapa AI menganggap air mineral alami sebagai limbah beracun?",
+        "3. [Dampak Fatal] Kerugian apa yang dialami warga desa yang krisis air bersih?",
+        "4. [Sensor vs Visual] Mengapa kejernihan visual tidak cukup tanpa sensor kimia?",
+        "5. [Solusi Data] Kombinasi data fisik & kimia apa yang harus dimasukkan ke AI?"
+      ]
+    },
+    {
+      title: "Misteri #7: Robot Penjaga Perlintasan Kereta Api",
+      desc: "Investigasi tidak menutupnya palang pintu kereta saat ada pesepeda melintas.",
+      samples: Array(12).fill({ label: "Foto Mobil & Truk Besar" }),
+      errorSim: "FATAL ERROR: AI Tidak Menutup Palang Pintu Kereta saat ada Pesepeda & Gerobak melintas karena menganggapnya sebagai 'Objek Sampah Terbang'!",
+      questions: [
+        "1. [Diagnosis] Kelalaian palang pintu otomatis apa yang mengancam nyawa pesepeda?",
+        "2. [Analisis Data] Mengapa robot tidak mendeteksi pesepeda sebagai penyeberang?",
+        "3. [Dampak Fatal] Bencana lalu lintas apa yang bisa terjadi di perlintasan?",
+        "4. [Bias Kendaraan] Mengapa melatih AI hanya dengan mobil/truk sangat berbahaya?",
+        "5. [Solusi Data] Susun sampel data pengguna jalan yang wajib dilatihkan!"
+      ]
+    },
+    {
+      title: "Misteri #8: AI Deteksi Karhutla (Kebakaran Hutan)",
+      desc: "Investigasi gagal membunyikan alarm saat terjadi pendar titik api malam hari.",
+      samples: Array(12).fill({ label: "Foto Asap Siang Hari" }),
+      errorSim: "FATAL ERROR: AI Gagal Membunyikan Alarm Kebakaran saat ada Titik Api Besar Malam Hari dan menganggap pendar merah sebagai 'Lampu Pemukiman'!",
+      questions: [
+        "1. [Diagnosis] Kebakaran hutan kapan yang gagal dideteksi oleh satelit AI?",
+        "2. [Analisis Data] Tunjukkan ketidakseimbangan data latihan siang vs malam!",
+        "3. [Dampak Fatal] Kerusakan hutan apa yang terjadi jika api terlambat dipadamkan?",
+        "4. [Pola Visual] Mengapa asap siang dan pendar api malam beda bagi AI?",
+        "5. [Solusi Data] Rencana data satelit multi-spektrum apa yang harus dibuat?"
+      ]
+    },
+    {
+      title: "Misteri #9: AI Pemilah Hasil Panen Mangga",
+      desc: "Investigasi terbuangnya ton-tonan mangga matang ke tempat sampah.",
+      samples: Array(12).fill({ label: "Foto Mangga Hijau Mulus" }),
+      errorSim: "FATAL ERROR: AI mendeteksi Mangga Matang Manis Berwarna Kuning/Kemerahan sebagai 'BUAH BUSUK / RUSAK' dan membuangnya ke tempat sampah!",
+      questions: [
+        "1. [Diagnosis] Buah mangga kualitas apa yang salah dibuang oleh AI pemilah?",
+        "2. [Analisis Data] Amati sampel foto di atas. Mengapa AI mendeteksi warna kuning = busuk?",
+        "3. [Dampak Fatal] Kerugian ekonomi apa yang dialami oleh para petani perkebunan?",
+        "4. [Prinsip GIGO] Bagaimana kasus mangga ini membuktikan prinsip GIGO?",
+        "5. [Solusi Data] Sebutkan variasi foto mangga yang harus ditambahkan ke AI!"
+      ]
+    },
+    {
+      title: "Misteri #10: AI Sistem Peringatan Dini Tsunami",
+      desc: "Investigasi pembatalan peringatan tsunami saat gunung laut meletus.",
+      samples: Array(12).fill({ label: "Data Gempa Tektonik >7SR" }),
+      errorSim: "FATAL ERROR: AI Membatalkan Peringatan Tsunami saat gunung laut meletus & longsor, karena tidak mendeteksi adanya gempa bumi besar!",
+      questions: [
+        "1. [Diagnosis] Peringatan bencana pantai apa yang dibatalkan keliru oleh AI?",
+        "2. [Analisis Data] Mengapa AI membatalkan tsunami saat gunung laut longsor?",
+        "3. [Dampak Fatal] Kerugian jiwa apa yang mengancam warga di pesisir pantai?",
+        "4. [Multi-Indikator] Mengapa AI tak boleh cuma bergantung pada 1 indikator gempa?",
+        "5. [Solusi Data] Rancang integrasi data multi-sensor untuk memperbarui AI!"
+      ]
+    }
+  ];
+
+  // Utility Font Size Adjuster
+  function setFontSize(size) {
+    document.documentElement.style.setProperty('--font-scale', size);
+  }
+
+  // Timer Countdown 60 Menit
+  let totalSeconds = 3600;
+  setInterval(() => {
+    if (totalSeconds > 0 && currentStep > 1 && currentStep < 5) {
+      totalSeconds--;
+      let m = Math.floor(totalSeconds / 60);
+      let s = totalSeconds % 60;
+      document.getElementById('cbt-timer').innerText = `00:${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
+    }
+  }, 1000);
+
+  // LOGIKA UTAMA APLIKASI WEB
+  function startExam() {
+    const nama = document.getElementById('student-nama').value.trim();
+    const kelas = document.getElementById('student-kelas').value;
+    const absen = document.getElementById('student-absen').value;
+
+    if (!nama || !kelas || !absen) {
+      alert("Harap isi Nama, Kelas, dan Nomor Absen!");
+      return;
+    }
+
+    studentData = { nama, kelas, noAbsen: absen };
+    document.getElementById('display-user-name').innerText = `Peserta: ${nama}`;
+    document.getElementById('display-user-kelas').innerText = `${kelas} / Absen: ${absen}`;
+    document.getElementById('btn-toggle-grid').classList.remove('d-none');
+
+    switchSession(2);
+    renderQuestionNavigator();
+    showQuestion(0);
+  }
+
+  function switchSession(sessionNum) {
+    currentStep = sessionNum;
+    for (let i = 1; i <= 5; i++) {
+      document.getElementById(`session-${i}`).classList.add('d-none');
+    }
+    document.getElementById(`session-${sessionNum}`).classList.remove('d-none');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // SESI 2: NAVIGATOR & SOAL PG/TF SATU PER SATU
+  function renderQuestionNavigator() {
+    const modalDrawer = document.getElementById('modal-grid-drawer');
+    modalDrawer.innerHTML = '';
+    
+    objectiveQuestions.forEach((_, idx) => {
+      const btn = document.createElement('div');
+      let statusClass = '';
+      if (raguAnswers[idx]) {
+        statusClass = 'ragu';
+      } else if (studentObjectiveAnswers[idx]) {
+        statusClass = 'filled';
+      }
+      if (idx === currentQuestionIndex) statusClass += ' active';
+
+      btn.className = `nav-num-btn ${statusClass}`;
+      btn.innerText = idx + 1;
+      btn.onclick = () => {
+        showQuestion(idx);
+        const modalEl = document.getElementById('gridModal');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
+      };
+      modalDrawer.appendChild(btn);
+    });
+  }
+
+  function showQuestion(index) {
+    currentQuestionIndex = index;
+    const q = objectiveQuestions[index];
+
+    document.getElementById('q-header-title').innerText = `Soal Nomor ${index + 1}`;
+    document.getElementById('q-progress-text').innerText = `${index + 1} / ${objectiveQuestions.length}`;
+    document.getElementById('q-text').innerText = q.q;
+
+    document.getElementById('chk-ragu').checked = !!raguAnswers[index];
+
+    const optionsContainer = document.getElementById('q-options');
+    optionsContainer.innerHTML = '';
+
+    q.options.forEach((optStr) => {
+      const optVal = optStr.startsWith('A.') ? 'A' : optStr.startsWith('B.') ? 'B' : optStr.startsWith('C.') ? 'C' : optStr.startsWith('D.') ? 'D' : optStr;
+      const isSelected = studentObjectiveAnswers[index] === optVal;
+
+      const div = document.createElement('div');
+      div.className = `opt-box ${isSelected ? 'selected' : ''}`;
+      div.onclick = () => selectAnswer(index, optVal);
+      div.innerHTML = `
+        <div class="d-flex align-items-center">
+          <input type="radio" name="opt-${index}" class="form-check-input me-3" ${isSelected ? 'checked' : ''}>
+          <div>${optStr}</div>
+        </div>
+      `;
+      optionsContainer.appendChild(div);
+    });
+
+    document.getElementById('btn-prev-q').style.visibility = index === 0 ? 'hidden' : 'visible';
+    if (index === objectiveQuestions.length - 1) {
+      document.getElementById('btn-next-q').classList.add('d-none');
+      document.getElementById('btn-finish-objective').classList.remove('d-none');
+    } else {
+      document.getElementById('btn-next-q').classList.remove('d-none');
+      document.getElementById('btn-finish-objective').classList.add('d-none');
+    }
+
+    renderQuestionNavigator();
+  }
+
+  function selectAnswer(qIndex, val) {
+    studentObjectiveAnswers[qIndex] = val;
+    renderQuestionNavigator();
+    showQuestion(qIndex);
+  }
+
+  function toggleRagu() {
+    const isChecked = document.getElementById('chk-ragu').checked;
+    raguAnswers[currentQuestionIndex] = isChecked;
+    renderQuestionNavigator();
+  }
+
+  function prevQuestion() {
+    if (currentQuestionIndex > 0) showQuestion(currentQuestionIndex - 1);
+  }
+
+  function nextQuestion() {
+    if (currentQuestionIndex < objectiveQuestions.length - 1) showQuestion(currentQuestionIndex + 1);
+  }
+
+  function goToCaseSelection() {
+    const answeredCount = Object.keys(studentObjectiveAnswers).length;
+    if (answeredCount < objectiveQuestions.length) {
+      if (!confirm(`Kamu baru menjawab ${answeredCount} dari 30 soal. Yakin ingin lanjut ke Soal Esai Kasus?`)) {
+        return;
+      }
+    }
+    renderCaseOptions();
+    switchSession(3);
+  }
+
+  // SESI 3: PEMILIHAN KASUS
+  function renderCaseOptions() {
+    const container = document.getElementById('case-options-container');
+    container.innerHTML = '';
+
+    caseStudies.forEach((c, idx) => {
+      const col = document.createElement('div');
+      col.className = 'col-md-6';
+      col.innerHTML = `
+        <div class="case-box ${selectedCaseIndex === idx ? 'selected' : ''}" onclick="selectCase(${idx})">
+          <h6 class="fw-bold text-primary mb-1">${c.title}</h6>
+          <p class="small text-muted mb-0">${c.desc}</p>
+        </div>
+      `;
+      container.appendChild(col);
+    });
+  }
+
+  function selectCase(idx) {
+    selectedCaseIndex = idx;
+    renderCaseOptions();
+    const btn = document.getElementById('btn-confirm-case');
+    btn.classList.remove('disabled');
+    btn.disabled = false;
+  }
+
+  function confirmCaseSelection() {
+    if (selectedCaseIndex === null) return;
+    renderEssaySession();
+    switchSession(4);
+  }
+
+  // SESI 4: ESAI ANALISIS KASUS
+  function renderEssaySession() {
+    const c = caseStudies[selectedCaseIndex];
+    document.getElementById('essay-case-title').innerText = c.title;
+
+    const gallery = document.getElementById('essay-data-gallery');
+    gallery.innerHTML = '';
+    c.samples.forEach((s, idx) => {
+      const col = document.createElement('div');
+      col.className = 'col';
+      col.innerHTML = `
+        <div class="card text-center p-2 border shadow-sm">
+          <div class="bg-secondary-subtle rounded py-1 fw-bold text-secondary mb-1" style="font-size: 0.7rem;">SAMPEL #${idx+1}</div>
+          <div style="font-size: 0.7rem;">${s.label}</div>
+        </div>
+      `;
+      gallery.appendChild(col);
+    });
+
+    const simOut = document.getElementById('simulation-output');
+    simOut.style.display = 'none';
+    simOut.innerText = '';
+
+    const qList = document.getElementById('essay-questions-list');
+    qList.innerHTML = '';
+    c.questions.forEach((qText, idx) => {
+      const div = document.createElement('div');
+      div.className = 'mb-3';
+      div.innerHTML = `
+        <label class="form-label fw-bold small text-dark">${qText}</label>
+        <textarea id="essay-${idx+1}" class="form-control" rows="3" placeholder="Tuliskan analisis kritismu di sini..." required></textarea>
+      `;
+      qList.appendChild(div);
+    });
+  }
+
+  function runSimulation() {
+    const c = caseStudies[selectedCaseIndex];
+    const simOut = document.getElementById('simulation-output');
+    simOut.style.display = 'block';
+    simOut.innerText = ">> TESTBED SIMULATION EXECUTING...\n" + c.errorSim;
+  }
+
+  // SUBMIT EXAM & SPREADSHEET API
+  function submitExam() {
+    for (let i = 1; i <= 5; i++) {
+      const val = document.getElementById(`essay-${i}`).value.trim();
+      if (!val) {
+        alert(`Harap isi jawaban untuk Pertanyaan Esai Nomor ${i}!`);
+        return;
+      }
+      essayAnswers[`nomor${i}`] = val;
+    }
+
+    let correctCount = 0;
+    objectiveQuestions.forEach((q, idx) => {
+      if (studentObjectiveAnswers[idx] === q.key) {
+        correctCount++;
+      }
+    });
+
+    const pgScore = correctCount * 2.5;
+
+    // Menggunakan URLSearchParams agar format data pas dengan e.parameter Apps Script
+    const params = new URLSearchParams();
+    params.append("timestamp", new Date().toLocaleString("id-ID"));
+    params.append("kelas", studentData.kelas);
+    params.append("nama", studentData.nama);
+    params.append("noAbsen", studentData.noAbsen);
+    params.append("jumlahBenar", correctCount);
+    params.append("kasus", caseStudies[selectedCaseIndex].title);
+    params.append("nomor1", essayAnswers.nomor1);
+    params.append("nomor2", essayAnswers.nomor2);
+    params.append("nomor3", essayAnswers.nomor3);
+    params.append("nomor4", essayAnswers.nomor4);
+    params.append("nomor5", essayAnswers.nomor5);
+    params.append("totalScore", pgScore);
+    params.append("nilaiAkhir", "Belum Diperiksa Guru (Skor PG/TF: " + pgScore + "/75)");
+
+    // PENGIRIMAN DATA
+    if (WEB_APP_URL && WEB_APP_URL.includes("script.google.com")) {
+      fetch(WEB_APP_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: params.toString()
+      })
+      .then(() => console.log("Data berhasil dikirim ke Spreadsheet!"))
+      .catch(err => console.log("Gagal mengirim:", err));
+    } else {
+      alert("URL Web App Google Script belum diisi!");
+    }
+
+    renderSummaryView(correctCount, pgScore);
+    switchSession(5);
+    initFlappy();
+  }
+  // SESI 5: HASIL, REKAPAN & TABLE PREVIEW
+  function renderSummaryView(correctCount, pgScore) {
+    document.getElementById('summary-student-name').innerText = `${studentData.nama} (${studentData.kelas} / Absen ${studentData.noAbsen})`;
+    document.getElementById('summary-score-pg').innerText = `${pgScore} / 75 Poin`;
+
+    const tbody = document.getElementById('review-pg-table-body');
+    tbody.innerHTML = '';
+    objectiveQuestions.forEach((q, idx) => {
+      const ansSiswa = studentObjectiveAnswers[idx] || "Tidak Dijawab";
+      const isCorrect = ansSiswa === q.key;
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="fw-bold">${idx + 1}</td>
+        <td>${q.q}</td>
+        <td><span class="badge ${isCorrect ? 'bg-success' : 'bg-danger'}">${ansSiswa}</span></td>
+        <td><span class="badge bg-secondary">${q.key}</span></td>
+        <td>${isCorrect ? '<span class="text-success fw-bold"><i class="bi bi-check-circle-fill me-1"></i>BENAR</span>' : '<span class="text-danger fw-bold"><i class="bi bi-x-circle-fill me-1"></i>SALAH</span>'}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    const reviewEssay = document.getElementById('review-essay-container');
+    reviewEssay.innerHTML = `<h6 class="fw-bold text-primary mb-2">Kasus Terpilih: ${caseStudies[selectedCaseIndex].title}</h6>`;
+    caseStudies[selectedCaseIndex].questions.forEach((qText, idx) => {
+      reviewEssay.innerHTML += `
+        <div class="mb-2 p-2 bg-white rounded border">
+          <div class="fw-bold text-dark">${qText}</div>
+          <div class="text-secondary mt-1">${essayAnswers[`nomor${idx+1}`]}</div>
+        </div>
+      `;
+    });
+  }
+
+  // ==========================================
+  // MINI GAME 1: FLAPPY BIRD CANVAS
+  // ==========================================
+  let fCanvas, fCtx;
+  let fBird, fPipes, fScore, fLoop;
+  let fGameOver = false;
+
+  function initFlappy() {
+    fCanvas = document.getElementById('flappyCanvas');
+    if (!fCanvas) return;
+    fCtx = fCanvas.getContext('2d');
+
+    fBird = { x: 50, y: 150, radius: 12, gravity: 0.35, lift: -6.5, velocity: 0 };
+    fPipes = [];
+    fScore = 0;
+    fGameOver = false;
+
+    if (fLoop) clearInterval(fLoop);
+    fLoop = setInterval(updateFlappy, 1000 / 60);
+  }
+
+  function flappyJump() {
+    if (!fGameOver) {
+      fBird.velocity = fBird.lift;
+    } else {
+      initFlappy();
+    }
+  }
+
+  function updateFlappy() {
+    fCtx.fillStyle = '#70c5ce';
+    fCtx.fillRect(0, 0, fCanvas.width, fCanvas.height);
+
+    // Bird Physics
+    fBird.velocity += fBird.gravity;
+    fBird.y += fBird.velocity;
+
+    // Draw Bird
+    fCtx.fillStyle = '#f59e0b';
+    fCtx.beginPath();
+    fCtx.arc(fBird.x, fBird.y, fBird.radius, 0, Math.PI * 2);
+    fCtx.fill();
+
+    // Pipes Spawning
+    if (fLoop % 100 === 0 || fPipes.length === 0) {
+      let gap = 110;
+      let topHeight = Math.floor(Math.random() * (fCanvas.height - gap - 80)) + 30;
+      fPipes.push({ x: fCanvas.width, top: topHeight, bottom: topHeight + gap, passed: false });
+    }
+
+    // Move & Draw Pipes
+    for (let i = 0; i < fPipes.length; i++) {
+      let p = fPipes[i];
+      p.x -= 2;
+
+      fCtx.fillStyle = '#10b981';
+      fCtx.fillRect(p.x, 0, 45, p.top);
+      fCtx.fillRect(p.x, p.bottom, 45, fCanvas.height - p.bottom);
+
+      // Collision Detection
+      if (
+        fBird.x + fBird.radius > p.x &&
+        fBird.x - fBird.radius < p.x + 45 &&
+        (fBird.y - fBird.radius < p.top || fBird.y + fBird.radius > p.bottom)
+      ) {
+        fGameOver = true;
+      }
+
+      if (p.x + 45 < fBird.x && !p.passed) {
+        p.passed = true;
+        fScore++;
+      }
+    }
+
+    // Ground/Ceiling Collision
+    if (fBird.y + fBird.radius >= fCanvas.height || fBird.y - fBird.radius <= 0) {
+      fGameOver = true;
+    }
+
+    // Draw Score
+    fCtx.fillStyle = '#ffffff';
+    fCtx.font = 'bold 20px sans-serif';
+    fCtx.fillText('Skor: ' + fScore, 15, 30);
+
+    if (fGameOver) {
+      clearInterval(fLoop);
+      fCtx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+      fCtx.fillRect(0, 0, fCanvas.width, fCanvas.height);
+      fCtx.fillStyle = '#ffffff';
+      fCtx.font = 'bold 22px sans-serif';
+      fCtx.textAlign = 'center';
+      fCtx.fillText('GAME OVER!', fCanvas.width / 2, fCanvas.height / 2 - 10);
+      fCtx.font = '14px sans-serif';
+      fCtx.fillText('Klik / Spasi untuk Coba Lagi', fCanvas.width / 2, fCanvas.height / 2 + 20);
+      fCtx.textAlign = 'start';
+    }
+  }
+
+  // ==========================================
+  // MINI GAME 2: DINO RUNNER / LONCAT RINTANGAN
+  // ==========================================
+  let dCanvas, dCtx;
+  let dDino, dObstacles, dScore, dLoop;
+  let dGameOver = false;
+
+  function initDino() {
+    dCanvas = document.getElementById('dinoCanvas');
+    if (!dCanvas) return;
+    dCtx = dCanvas.getContext('2d');
+
+    dDino = { x: 40, y: 190, w: 25, h: 35, vy: 0, gravity: 0.6, isJumping: false };
+    dObstacles = [];
+    dScore = 0;
+    dGameOver = false;
+
+    if (dLoop) clearInterval(dLoop);
+    dLoop = setInterval(updateDino, 1000 / 60);
+  }
+
+  function dinoJump() {
+    if (!dDino.isJumping && !dGameOver) {
+      dDino.vy = -11;
+      dDino.isJumping = true;
+    } else if (dGameOver) {
+      initDino();
+    }
+  }
+
+  function updateDino() {
+    dCtx.fillStyle = '#1e293b';
+    dCtx.fillRect(0, 0, dCanvas.width, dCanvas.height);
+
+    // Ground Line
+    dCtx.strokeStyle = '#64748b';
+    dCtx.lineWidth = 2;
+    dCtx.beginPath();
+    dCtx.moveTo(0, 225);
+    dCtx.lineTo(dCanvas.width, 225);
+    dCtx.stroke();
+
+    // Dino Physics
+    dDino.vy += dDino.gravity;
+    dDino.y += dDino.vy;
+
+    if (dDino.y >= 190) {
+      dDino.y = 190;
+      dDino.vy = 0;
+      dDino.isJumping = false;
+    }
+
+    // Draw Dino
+    dCtx.fillStyle = '#3b82f6';
+    dCtx.fillRect(dDino.x, dDino.y, dDino.w, dDino.h);
+
+    // Obstacles Spawning
+    if (Math.random() < 0.012 && dObstacles.length < 3) {
+      dObstacles.push({ x: dCanvas.width, w: 20, h: 30 + Math.floor(Math.random() * 15) });
+    }
+
+    for (let i = 0; i < dObstacles.length; i++) {
+      let o = dObstacles[i];
+      o.x -= 4;
+
+      dCtx.fillStyle = '#ef4444';
+      dCtx.fillRect(o.x, 225 - o.h, o.w, o.h);
+
+      // Collision Detection
+      if (
+        dDino.x < o.x + o.w &&
+        dDino.x + dDino.w > o.x &&
+        dDino.y + dDino.h > 225 - o.h
+      ) {
+        dGameOver = true;
+      }
+    }
+
+    dObstacles = dObstacles.filter(o => o.x > -30);
+    dScore++;
+
+    // Draw Score
+    dCtx.fillStyle = '#ffffff';
+    dCtx.font = 'bold 16px font-monospace';
+    dCtx.fillText('Skor: ' + Math.floor(dScore / 5), 15, 25);
+
+    if (dGameOver) {
+      clearInterval(dLoop);
+      dCtx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+      fCtx = dCtx;
+      fCtx.fillRect(0, 0, dCanvas.width, dCanvas.height);
+      dCtx.fillStyle = '#ffffff';
+      dCtx.font = 'bold 20px sans-serif';
+      dCtx.textAlign = 'center';
+      dCtx.fillText('GAME OVER!', dCanvas.width / 2, dCanvas.height / 2 - 10);
+      dCtx.font = '14px sans-serif';
+      dCtx.fillText('Klik / Spasi untuk Coba Lagi', dCanvas.width / 2, dCanvas.height / 2 + 20);
+      dCtx.textAlign = 'start';
+    }
+  }
+
+  // Keyboard Event Listeners for Mini Games
+  window.addEventListener('keydown', (e) => {
+    if (e.code === 'Space' || e.code === 'ArrowUp') {
+      const activeTab = document.querySelector('.tab-pane.active');
+      if (activeTab && activeTab.id === 'flappy-game') {
+        flappyJump();
+        e.preventDefault();
+      } else if (activeTab && activeTab.id === 'dino-game') {
+        dinoJump();
+        e.preventDefault();
+      }
+    }
+  });
+
+  // Canvas Click Event Listeners
+  document.addEventListener('DOMContentLoaded', () => {
+    const fC = document.getElementById('flappyCanvas');
+    if (fC) fC.addEventListener('click', flappyJump);
+    const dC = document.getElementById('dinoCanvas');
+    if (dC) dC.addEventListener('click', dinoJump);
+  });
+</script>
+</body>
+</html>
