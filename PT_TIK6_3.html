@@ -1176,10 +1176,11 @@
   // MINI GAME 1: FLAPPY BIRD CANVAS
   // ==========================================
   let fCanvas, fCtx;
-  let fBird, fPipes, fScore, fLoop;
+  let fBird, fPipes, fScore, fLoop, fFrameCount;
   let fGameOver = false;
 
   function initFlappy() {
+    fFrameCount = 0;
     fCanvas = document.getElementById('flappyCanvas');
     if (!fCanvas) return;
     fCtx = fCanvas.getContext('2d');
@@ -1202,6 +1203,8 @@
   }
 
   function updateFlappy() {
+    fFrameCount++; // Wajib ada agar jeda kemunculan pipa berjalan!
+
     fCtx.fillStyle = '#70c5ce';
     fCtx.fillRect(0, 0, fCanvas.width, fCanvas.height);
 
@@ -1215,40 +1218,55 @@
     fCtx.arc(fBird.x, fBird.y, fBird.radius, 0, Math.PI * 2);
     fCtx.fill();
 
-    // Pipes Spawning
-    if (fLoop % 100 === 0 || fPipes.length === 0) {
-      let gap = 110;
-      let topHeight = Math.floor(Math.random() * (fCanvas.height - gap - 80)) + 30;
-      fPipes.push({ x: fCanvas.width, top: topHeight, bottom: topHeight + gap, passed: false });
+    // Pipes Spawning (Muncul setiap 120 frame)
+    if (fFrameCount % 120 === 0 || fPipes.length === 0) {
+        let gap = 120;
+        let topHeight = Math.floor(Math.random() * (fCanvas.height - gap - 100)) + 40;
+        fPipes.push({ 
+            x: fCanvas.width, 
+            top: topHeight, 
+            bottom: topHeight + gap, 
+            passed: false 
+        });
     }
 
-    // Move & Draw Pipes
-    for (let i = 0; i < fPipes.length; i++) {
-      let p = fPipes[i];
-      p.x -= 2;
+    // Move & Draw Pipes (GUNAKAN LOOP MUNDUR AGAR SPLICE AMAN)
+    for (let i = fPipes.length - 1; i >= 0; i--) {
+        let p = fPipes[i];
+        p.x -= 2; // Kecepatan gerak pipa
 
-      fCtx.fillStyle = '#10b981';
-      fCtx.fillRect(p.x, 0, 45, p.top);
-      fCtx.fillRect(p.x, p.bottom, 45, fCanvas.height - p.bottom);
+        // Gambar Pipa Atas
+        fCtx.fillStyle = '#10b981';
+        fCtx.fillRect(p.x, 0, 45, p.top);
 
-      // Collision Detection
-      if (
-        fBird.x + fBird.radius > p.x &&
-        fBird.x - fBird.radius < p.x + 45 &&
-        (fBird.y - fBird.radius < p.top || fBird.y + fBird.radius > p.bottom)
-      ) {
-        fGameOver = true;
-      }
+        // Gambar Pipa Bawah
+        fCtx.fillRect(p.x, p.bottom, 45, fCanvas.height - p.bottom);
 
-      if (p.x + 45 < fBird.x && !p.passed) {
-        p.passed = true;
-        fScore++;
-      }
+        // Hapus pipa jika sudah lewat layar sebelah kiri
+        if (p.x + 45 < 0) {
+            fPipes.splice(i, 1);
+            continue;
+        }
+
+        // Collision Detection (Tabrakan dengan Burung)
+        if (
+            fBird.x + fBird.radius > p.x &&
+            fBird.x - fBird.radius < p.x + 45 &&
+            (fBird.y - fBird.radius < p.top || fBird.y + fBird.radius > p.bottom)
+        ) {
+            fGameOver = true;
+        }
+
+        // Hitung Skor
+        if (p.x + 45 < fBird.x && !p.passed) {
+            p.passed = true;
+            fScore++;
+        }
     }
 
-    // Ground/Ceiling Collision
+    // Ground/Ceiling Collision (Tabrakan dengan atas/bawah layar)
     if (fBird.y + fBird.radius >= fCanvas.height || fBird.y - fBird.radius <= 0) {
-      fGameOver = true;
+        fGameOver = true;
     }
 
     // Draw Score
@@ -1256,19 +1274,20 @@
     fCtx.font = 'bold 20px sans-serif';
     fCtx.fillText('Skor: ' + fScore, 15, 30);
 
+    // Game Over Screen
     if (fGameOver) {
-      clearInterval(fLoop);
-      fCtx.fillStyle = 'rgba(0, 0, 0, 0.6)';
-      fCtx.fillRect(0, 0, fCanvas.width, fCanvas.height);
-      fCtx.fillStyle = '#ffffff';
-      fCtx.font = 'bold 22px sans-serif';
-      fCtx.textAlign = 'center';
-      fCtx.fillText('GAME OVER!', fCanvas.width / 2, fCanvas.height / 2 - 10);
-      fCtx.font = '14px sans-serif';
-      fCtx.fillText('Klik / Spasi untuk Coba Lagi', fCanvas.width / 2, fCanvas.height / 2 + 20);
-      fCtx.textAlign = 'start';
+        clearInterval(fLoop);
+        fCtx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+        fCtx.fillRect(0, 0, fCanvas.width, fCanvas.height);
+        fCtx.fillStyle = '#ffffff';
+        fCtx.font = 'bold 22px sans-serif';
+        fCtx.textAlign = 'center';
+        fCtx.fillText('GAME OVER!', fCanvas.width / 2, fCanvas.height / 2 - 10);
+        fCtx.font = '14px sans-serif';
+        fCtx.fillText('Klik / Spasi untuk Coba Lagi', fCanvas.width / 2, fCanvas.height / 2 + 20);
+        fCtx.textAlign = 'start';
     }
-  }
+}
 
   // ==========================================
   // MINI GAME 2: DINO RUNNER / LONCAT RINTANGAN
